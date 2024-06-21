@@ -1,0 +1,10 @@
+.form-group-style {
+    background-color: rgb(255, 255, 255) !important;
+    font-weight: bold !important;
+}
+
+.result {
+    color: rgb(245, 22, 22);
+    font-weight: bold;
+    font-style: italic;
+}

@@ -1,0 +1,9 @@
+.custom-dropdown {
+    appearance: none;
+    background-color: white;
+    background-image: url('../../assets/images/down-arrow.png');
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    padding-right: 35px;
+}
