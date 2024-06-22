@@ -15,6 +15,13 @@ const menuItems = {
       url: '/app/parastatika'
     },
     {
+      id: 'eidh',
+      title: 'Είδη',
+      type: 'item',
+      icon: 'feather icon-shopping-cart',
+      url: '/app/eidh'
+    },
+    {
       id: 'epafes',
       title: 'Επαφές',
       type: 'item',

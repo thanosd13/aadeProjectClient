@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Row, Col, Card, Form, Button, Modal, InputGroup, FormControl, DropdownButton, Dropdown } from 'react-bootstrap';
-import CountryDropdown from '../Generic/CountryDropdown';
+import { Row, Col, Form, Button, Modal, InputGroup } from 'react-bootstrap';
+import CountryDropDown from '../Generic/CountryDropDown';
 import CustomerService from "../../services/CustomerService";
 import './Modal.css';
 import { useSelector } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
+import ResultModal from './ResultModal';
 
-const CustomerModal = ({ showModal, handleCloseModal }) => {
+const CustomerModal = ({ showModal, handleCloseModal, onCustomerAdded, isEditing, customerData }) => {
 
       const [error, setError] = useState("");
-      const id = useSelector(state => state.auth.user.user.id);
+      const [id, setId] = useState(null);
       const [loading, setLoading] = useState(false);
+      const [resultOpen, setResultOpen] = useState(false);
+      const [status, setStatus] = useState(null);
+      const [title, setTitle] = useState("");
+      const [body, setBody] = useState("");
+      const userId = useSelector(state => state.auth.user.user.id);
       
       const initialFormData = {
           afm: "",
@@ -41,17 +46,26 @@ const CustomerModal = ({ showModal, handleCloseModal }) => {
           tel_number: ""
       });
 
-      useEffect(()=>{
-        if (showModal) {
-          setFormData(initialFormData);
-        }
-      },[showModal])
+      useEffect(() => {
+          if (showModal && isEditing) {
+              setId(customerData.id);
+              setFormData(customerData);
+          } else if (showModal) {
+              setId(userId);
+              setFormData(initialFormData);
+          }
+          setError("");
+      }, [showModal, isEditing, customerData]);
 
       const handleInputChange = (event) => {
         setFormData({
             ...formData,
             [event.target.name]: event.target.value,
         });
+      };
+
+      const handleClose = () => {
+        setResultOpen(false);
       };
 
       const searchWithAfm = () => {
@@ -90,18 +104,29 @@ const CustomerModal = ({ showModal, handleCloseModal }) => {
         });
       }
 
-      const addCustomer = () => {
+      const handleSubmit = () => {
           setLoading(true);
-          CustomerService.addCustomer(formData,id)
+          const serviceFunction = isEditing ? CustomerService.updateCustomer : CustomerService.addCustomer;
+          
+          serviceFunction(formData, id)
           .then(response => {
               setLoading(false);
-              console.log(response);
-          }).catch(error => {
+              setStatus(response.status);
+              setResultOpen(true);
+              setTitle(isEditing ? "Επιτυχής ενημέρωση" : "Επιτυχής ενέργεια");
+              setBody(isEditing ? "Ο πελάτης ενημερώθηκε επιτυχώς." : "Ο πελάτης αποθηκεύτηκε επιτυχώς.");
+              onCustomerAdded();
+              handleCloseModal();
+          })
+          .catch(error => {
               setLoading(false);
-              console.log(error);
+              setStatus(error.response.status);
+              setResultOpen(true);
+              setTitle("Σφάλμα");
+              setBody(`${error.response.data.error}`);
+              handleCloseModal();
           });
-          handleCloseModal();
-      }
+      } 
     
 
 
@@ -114,7 +139,7 @@ const CustomerModal = ({ showModal, handleCloseModal }) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-modal-sizes-title-lg">
-            Προσθήκη Πελάτη
+            {isEditing? "Επξεργασία Πελάτη" : "Προσθήκη Πελάτη"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -152,7 +177,7 @@ const CustomerModal = ({ showModal, handleCloseModal }) => {
                     </Form.Group>
                 </Row>
                   <Row gy={3}>
-                    <CountryDropdown className="mb-3" formData={formData} setFormData={setFormData} />
+                    <CountryDropDown className="mb-3" formData={formData} setFormData={setFormData} />
                     <Form.Group className="mb-3" as={Col} controlId="formGridPassword">
                       <Form.Label>Πόλη</Form.Label>
                       <Form.Control className='form-group-style' type="text" placeholder="Πόλη" name="city" value={formData.city} onChange={handleInputChange} />
@@ -192,7 +217,7 @@ const CustomerModal = ({ showModal, handleCloseModal }) => {
                           <Form.Control className='form-group-style' type="number" placeholder="Τηλέφωνο" name="tel_number" value={formData.tel_number} onChange={handleInputChange} />
                       </Form.Group>
                   </Row>
-                  <Button onClick={addCustomer} variant="success">
+                  <Button onClick={handleSubmit} variant="success">
                       <i className="feather icon-save" />
                       Αποθήκευση
                       {loading &&
@@ -213,6 +238,7 @@ const CustomerModal = ({ showModal, handleCloseModal }) => {
             </Form>
         </Modal.Body>
       </Modal>
+      <ResultModal show={resultOpen} status={status} title={title} body={body} onHide={handleClose} />
     </React.Fragment>
     );
 }

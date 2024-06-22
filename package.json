@@ -4,6 +4,9 @@
   "private": false,
   "license": "MIT",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@reduxjs/toolkit": "^1.9.5",
     "@tanem/react-nprogress": "^5.0.42",
     "@testing-library/jest-dom": "^5.16.5",
@@ -22,6 +25,7 @@
     "react-bootstrap": "^2.7.4",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
+    "react-fontawesome": "^1.7.1",
     "react-google-maps": "^9.4.5",
     "react-icons": "^4.9.0",
     "react-nvd3": "^0.5.7",

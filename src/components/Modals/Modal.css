@@ -8,3 +8,28 @@
     font-weight: bold;
     font-style: italic;
 }
+
+.error-icon {
+    border-radius: 0.2rem;
+    background-color: red;
+    color: white;
+    padding: 0.5rem;
+}
+
+.modal-title{
+    text-align: center !important;
+}
+
+.modal-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.success-icon {
+    background-color: #a2e9a2;
+    padding: 0.7rem;
+    border-radius: 1.5rem;
+    color: #FFFFFF;
+}

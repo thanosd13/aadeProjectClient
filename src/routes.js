@@ -30,9 +30,6 @@ export const renderRoutes = (routes = []) => (
 
 
 
-
-console.log(localStorage.getItem("user"));
-
 const routes = [
   {
     exact: 'true',
@@ -70,8 +67,8 @@ const routes = [
       // },
       {
         exact: 'true',
-        path: '/basic/button',
-        element: lazy(() => import('./views/ui-elements/basic/BasicButton'))
+        path: '/app/eidh',
+        element: lazy(() => import('./views/products/Products'))
       },
       {
         exact: 'true',
