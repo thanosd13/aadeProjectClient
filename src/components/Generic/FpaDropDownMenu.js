@@ -23,7 +23,7 @@ const FpaDropDownMenu = ({ formData, setFormData }) => {
     return (
       <Form.Group as={Col} controlId="formGrid">
         <Form.Label>Φ.Π.Α</Form.Label>
-        <Form.Control as="select" value={formData.country} onChange={handleFpaChange} className="custom-dropdown">
+        <Form.Control as="select" value={formData.fpa} onChange={handleFpaChange} className="custom-dropdown">
           <option value="">Επιλέξτε</option>
           {initialData.map(item => (
             <option key={item.code} value={item.value}>{item.value}</option>

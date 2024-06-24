@@ -69,6 +69,16 @@
   display: none;
 }
 
+.btn_success {
+  background-color: #19856a !important;
+  border-color: #19856a !important;
+}
+
+.btn_success:hover {
+  background-color: #1cb48e !important;
+  border-color: #1cb48e !important;
+}
+
 .carousel-inner {
   overflow: visible;
   z-index: 1050;

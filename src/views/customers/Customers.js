@@ -23,7 +23,7 @@ const handleOpenModal = (customer) => {
       setCurrentCustomer(customer);
       setIsEditing(true);
   } else {
-    setCurrentCustomer(null);
+      setCurrentCustomer(null);
       setIsEditing(false);
   }
   setShowModal(true);

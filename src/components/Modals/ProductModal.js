@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, Button, Modal } from 'react-bootstrap';
-import CountryDropdown from '../Generic/CountryDropDown';
-import CustomerService from "../../services/CustomerService";
+import ProductService from '../../services/ProductService';
 import './Modal.css';
 import { useSelector } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
@@ -9,7 +8,7 @@ import ResultModal from './ResultModal';
 import PriceDropDownMenu from '../Generic/PriceDropDownMenu';
 import FpaDropDownMenu from '../Generic/FpaDropDownMenu';
 
-const ProductModal = ({ showModal, handleCloseModal, isEditing, productData }) => {
+const ProductModal = ({ showModal, handleCloseModal, onProductAdded, isEditing, productData }) => {
 
     const [error, setError] = useState("");
     const [id, setId] = useState(null);
@@ -30,18 +29,19 @@ const ProductModal = ({ showModal, handleCloseModal, isEditing, productData }) =
     }
 
     const [formData, setFormData] = useState({
-    name: "",
-    price: 0.0,
-    type: "",
-    fpa: "",
-    final_price: 0.0
+        name: "",
+        price: 0.0,
+        type: "",
+        fpa: "",
+        final_price: 0.0
     });
 
     useEffect(() => {
         if (showModal && isEditing) {
+            setId(productData.id);
             setFormData(productData);
         } else if (showModal) {
-            setFormData({ name: "", price: 0.0, fpa: "", final_price: 0.0, id: userId });
+            setFormData({ name: "", price: 0.0, fpa: "", final_price: 0.0 });
         }
     }, [showModal, isEditing, productData, userId]);
 
@@ -71,32 +71,34 @@ const ProductModal = ({ showModal, handleCloseModal, isEditing, productData }) =
     };
 
     const handleClose = () => {
-    setResultOpen(false);
+        setResultOpen(false);
     };
 
-    //   const handleSubmit = () => {
-    //       setLoading(true);
-    //       const serviceFunction = isEditing ? CustomerService.updateCustomer : CustomerService.addCustomer;
-          
-    //       serviceFunction(formData, id)
-    //       .then(response => {
-    //           setLoading(false);
-    //           setStatus(response.status);
-    //           setResultOpen(true);
-    //           setTitle(isEditing ? "Επιτυχής ενημέρωση" : "Επιτυχής ενέργεια");
-    //           setBody(isEditing ? "Ο πελάτης ενημερώθηκε επιτυχώς." : "Ο πελάτης αποθηκεύτηκε επιτυχώς.");
-    //           onCustomerAdded();
-    //           handleCloseModal();
-    //       })
-    //       .catch(error => {
-    //           setLoading(false);
-    //           setStatus(error.response.status);
-    //           setResultOpen(true);
-    //           setTitle("Σφάλμα");
-    //           setBody(`${error.response.data.error}`);
-    //           handleCloseModal();
-    //       });
-    //   } 
+    const handleSubmit = () => {
+        setLoading(true);
+        const serviceFunction =  isEditing ? ProductService.updateProduct : ProductService.addProduct;
+        
+        serviceFunction(formData, id)
+        .then(response => {   
+            if(response.status === 200 || response.status === 201) {
+                setLoading(false);
+                setStatus(response.status);
+                setResultOpen(true);
+                setTitle(isEditing ? "Επιτυχής ενημέρωση" : "Επιτυχής ενέργεια");
+                setBody(isEditing ? "Το είδος ενημερώθηκε επιτυχώς." : "Το είδος αποθηκεύτηκε επιτυχώς.");
+                onProductAdded();
+                handleCloseModal();
+            }
+        })
+        .catch(error => {
+            setLoading(false);
+            setStatus(error.response.status);
+            setResultOpen(true);
+            setTitle("Σφάλμα");
+            setBody(`${error.response.data.error}`);
+            handleCloseModal();
+        });
+      } 
     
 
 
@@ -133,7 +135,7 @@ const ProductModal = ({ showModal, handleCloseModal, isEditing, productData }) =
                             <Form.Control className='form-group-style' placeholder="Τελική τιμή" type="number" step="0.01" name="final_price" value={formData.final_price} onChange={handleInputChange} />
                     </Form.Group>
                 </Row>
-                <Button variant="success">
+                <Button onClick={handleSubmit   } variant="success">
                     <i className="feather icon-save" />
                     Αποθήκευση
                     {loading &&
@@ -154,7 +156,7 @@ const ProductModal = ({ showModal, handleCloseModal, isEditing, productData }) =
             </Form>
         </Modal.Body>
       </Modal>
-      {/* <ResultModal show={resultOpen} status={status} title={title} body={body} onHide={handleClose} /> */}
+      <ResultModal show={resultOpen} status={status} title={title} body={body} onHide={handleClose} />
     </React.Fragment>
     );
 }

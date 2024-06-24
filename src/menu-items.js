@@ -5,7 +5,7 @@ const menuItems = {
       title: 'Αρχική σελίδα',
       type: 'item',
       icon: 'feather icon-home',
-      url: '/app/dashboard/default'
+      url: '/app/home'
     },
     {
       id: 'parastatika',

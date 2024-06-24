@@ -4,6 +4,7 @@ import "./DropDown.css";
 import { initialData } from '../../data/productData';
 
 const PriceDropDownMenu = ({ formData, setFormData }) => {
+  
   const handleTypeChange = (event) => {
     setFormData({
       ...formData,
@@ -14,7 +15,7 @@ const PriceDropDownMenu = ({ formData, setFormData }) => {
   return (
     <Form.Group as={Col} controlId="formGrid">
       <Form.Label>Μονάδα μέτρησης</Form.Label>
-      <Form.Control as="select" value={formData.country} onChange={handleTypeChange} className="custom-dropdown">
+      <Form.Control as="select" value={formData.type} onChange={handleTypeChange} className="custom-dropdown">
         <option value="">Επιλέξτε</option>
         {initialData.map(item => (
           <option key={item.code} value={item.name}>{item.name}</option>

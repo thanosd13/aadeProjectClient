@@ -7,20 +7,27 @@ import CustomerService from '../../services/CustomerService';
 import {faBan, faPenToSquare} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ProductModal from '../../components/Modals/ProductModal';
+import ProductService from '../../services/ProductService';
 
 const Products = () => {
 
 const [showModal, setShowModal] = useState(false);
-// const [customers, setCustomers] = useState([]);
+const [products, setProducts] = useState([]);
 // const [showDelete, setShowDelete] = useState(false);
 // const [deleteId, setDeleteId] = useState(null);
 const [isEditing, setIsEditing] = useState(false);
-// const [currentCustomer, setCurrentCustomer] = useState(null);
-// const id = useSelector(state => state.auth.user.user.id);
+const [currentProduct, setCurrentProduct] = useState(null);
+const id = useSelector(state => state.auth.user.user.id);
 
-const handleOpenModal = (customer) => {
+const handleOpenModal = (product) => {
+  if (product && Object.keys(product).length > 0) {
+      setCurrentProduct(product);
+      setIsEditing(true);
+  } else {
+      setCurrentProduct(null);
+      setIsEditing(false);
+  }
   setShowModal(true);
-  setIsEditing(false);
 };
 
 const handleCloseModal = () => {
@@ -35,24 +42,29 @@ const handleCloseModal = () => {
 //   setShowDelete(false);
 // }
 
-// const getCustomers = () => {
-//     CustomerService.getByUserId(id)
-//     .then(response => {
-//         if(response.status === 200) {
-//           setCustomers(response.data);
-//         }
-//     }).catch(error => {
-//         console.log(error);
-//     });
-// }
+const getProducts = () => {
+    ProductService.getProducts(id)
+    .then(response => {
+      if(response.status === 200 && Array.isArray(response.data)) {
+          setProducts(response.data);
+      } else {
+          // Handle cases where data is not an array
+          console.log('Expected an array, but received:', response.data);
+          setProducts([]); // Reset or maintain an empty array
+      }
+  }).catch(error => {
+      console.log(error);
+      setProducts([]); // Reset on error
+  });
+}
 
-// const handleCustomerAdded = () => {
-//   getCustomers();
-// }
+const handleProductAdded = () => {
+    getProducts();
+}
 
-// useEffect(()=>{
-//   handleCustomerAdded();
-// },[])
+useEffect(()=>{
+    handleProductAdded();
+},[])
 
 
 return (
@@ -68,6 +80,7 @@ return (
             <Table responsive className="table-styling">
               <thead className="table-primary">
                 <tr>
+                  <th>ΑΑ</th>
                   <th>Όνομα</th>
                   <th>Τιμή</th>
                   <th>Μονάδες μέτρησης</th>
@@ -76,29 +89,37 @@ return (
                   <th>Ενέργειες</th>
                 </tr>
               </thead>
-              {/* <tbody>
-                {customers.map((customer, index) => (
+              <tbody>
+                {products.map((product, index) => (
                   <tr key={index}>
                     <th scope="row">{index+1}</th>
-                    <td>{customer.name}</td>
-                    <td>{customer.afm}</td>
-                    <td>{customer.doy}</td>
+                    <td>{product.name}</td>
+                    <td>{product.price}</td>
+                    <td>{product.type}</td>
+                    <td>{product.fpa}</td>
+                    <td>{product.final_price}</td>
                     <td>
-                      <button onClick={() => handleOpenModal(customer)} style={{color: '#ffffff', borderRadius: '20px'}} className="btn btn-warning">
+                      <button onClick={() => handleOpenModal(product)} style={{color: '#ffffff', borderRadius: '20px'}} className="btn btn-warning">
                           <FontAwesomeIcon icon={faPenToSquare}/>
                       </button>
-                      <button onClick={() => handleDelete(customer.id)} style={{color: '#ffffff', borderRadius: '20px'}} className="btn btn-danger">
+                      <button onClick={() => handleDelete(product.id)} style={{color: '#ffffff', borderRadius: '20px'}} className="btn btn-danger">
                           <FontAwesomeIcon icon={faBan}/>
                       </button>
                     </td>
                   </tr>
                 ))}
-              </tbody> */}
+              </tbody>
             </Table>
 
             </Card.Body>
         </Card>
-        <ProductModal showModal={showModal} handleCloseModal={handleCloseModal} isEditing={isEditing} />
+        <ProductModal 
+            showModal={showModal} 
+            handleCloseModal={handleCloseModal} 
+            isEditing={isEditing} 
+            onProductAdded={handleProductAdded}
+            productData={currentProduct}
+        />
     </React.Fragment>
 
     );

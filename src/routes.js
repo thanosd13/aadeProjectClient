@@ -57,14 +57,19 @@ const routes = [
     routes: [
       {
         exact: 'true',
+        path: '/app/home',
+        element: lazy(() => import('./views/home_page/HomePage'))
+      },
+      {
+        exact: 'true',
         path: '/app/epafes',
         element: lazy(() => import('./views/customers/Customers'))
       },
-      // {
-      //   exact: 'true',
-      //   path: '/app/dashboard/default',
-      //   element: lazy(() => import('./views/dashboard'))
-      // },
+      {
+        exact: 'true',
+        path: '/app/dashboard/default',
+        element: lazy(() => import('./views/dashboard'))
+      },
       {
         exact: 'true',
         path: '/app/eidh',
