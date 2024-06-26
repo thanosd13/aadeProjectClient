@@ -8,7 +8,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import ResultModal from './ResultModal';
 import UserService from '../../services/UserService';
 
-const CustomerModal = ({ showModal, handleCloseModal, onCustomerAdded, isEditing, customerData, isUser, userData, companyChange }) => {
+const InvoiceModal = ({ showModal, handleCloseModal, isEditing }) => {
 
       const [error, setError] = useState("");
       const [id, setId] = useState(null);
@@ -48,26 +48,26 @@ const CustomerModal = ({ showModal, handleCloseModal, onCustomerAdded, isEditing
           tel_number: ""
       });
 
-      useEffect(() => {
-          if (showModal && isEditing && !isUser) {
-              setId(customerData.id);
-              setFormData(customerData);
-              setModalTitle("Επεξεργασία πελάτη");
-          } else if (showModal && !isEditing && !isUser) {
-              setId(userId);
-              setFormData(initialFormData);
-              setModalTitle("Προσθήκη πελάτη");
-          } else if (showModal && !isEditing && isUser) {
-              setId(userId);
-              setFormData(initialFormData);
-              setModalTitle("Προσθήκη εταιρείας")
-          } else if (showModal && isEditing && isUser) {
-              setId(userData.id);
-              setFormData(userData);
-              setModalTitle("Επεξεργασία εταιρείας");
-          }
-          setError("");
-      }, [showModal, isEditing, customerData]);
+    //   useEffect(() => {
+    //       if (showModal && isEditing && !isUser) {
+    //           setId(customerData.id);
+    //           setFormData(customerData);
+    //           setModalTitle("Επεξεργασία πελάτη");
+    //       } else if (showModal && !isEditing && !isUser) {
+    //           setId(userId);
+    //           setFormData(initialFormData);
+    //           setModalTitle("Προσθήκη πελάτη");
+    //       } else if (showModal && !isEditing && isUser) {
+    //           setId(userId);
+    //           setFormData(initialFormData);
+    //           setModalTitle("Προσθήκη εταιρείας")
+    //       } else if (showModal && isEditing && isUser) {
+    //           setId(userData.id);
+    //           setFormData(userData);
+    //           setModalTitle("Επεξεργασία εταιρείας");
+    //       }
+    //       setError("");
+    //   }, [showModal, isEditing, customerData]);
 
       const handleInputChange = (event) => {
         setFormData({
@@ -116,70 +116,70 @@ const CustomerModal = ({ showModal, handleCloseModal, onCustomerAdded, isEditing
         });
       }
 
-      const handleSubmit = () => {
-          setLoading(true);
+    //   const handleSubmit = () => {
+    //       setLoading(true);
 
-          let serviceFunction;
+    //       let serviceFunction;
 
-          if(isEditing && !isUser) {
-            serviceFunction = CustomerService.updateCustomer;
-          } else if(!isEditing && !isUser) {
-            serviceFunction = CustomerService.addCustomer;
-          } else if(!isEditing && isUser) {
-            serviceFunction = UserService.createUserData;
-          } else if(isEditing && isUser) {
-            serviceFunction = UserService.updateUserData;
-          }
+    //       if(isEditing && !isUser) {
+    //         serviceFunction = CustomerService.updateCustomer;
+    //       } else if(!isEditing && !isUser) {
+    //         serviceFunction = CustomerService.addCustomer;
+    //       } else if(!isEditing && isUser) {
+    //         serviceFunction = UserService.createUserData;
+    //       } else if(isEditing && isUser) {
+    //         serviceFunction = UserService.updateUserData;
+    //       }
            
-          serviceFunction(formData, id)
-          .then(response => {
-              setLoading(false);
-              setStatus(response.status);
-              setResultOpen(true);
-              setTitle(isEditing ? "Επιτυχής ενημέρωση" : "Επιτυχής ενέργεια");
+    //       serviceFunction(formData, id)
+    //       .then(response => {
+    //           setLoading(false);
+    //           setStatus(response.status);
+    //           setResultOpen(true);
+    //           setTitle(isEditing ? "Επιτυχής ενημέρωση" : "Επιτυχής ενέργεια");
 
-              if (!isEditing && !isUser) {
-                setBody("Ο πελάτης προστέθηκε επιτυχώς!");
-              } else if (isEditing && !isUser) {
-                setBody("Ο πελάτης ενημερώθηκε επιτυχώς!");
-              } else if (!isEditing && isUser) {
-                setBody("Η εταιρεία προστέθηκε επιτυχώς!");
-              } else if (isEditing && isUser) {
-                setBody("Η εταιρεία ενημερώθηκε επιτυχώς!");
-              }
+    //           if (!isEditing && !isUser) {
+    //             setBody("Ο πελάτης προστέθηκε επιτυχώς!");
+    //           } else if (isEditing && !isUser) {
+    //             setBody("Ο πελάτης ενημερώθηκε επιτυχώς!");
+    //           } else if (!isEditing && isUser) {
+    //             setBody("Η εταιρεία προστέθηκε επιτυχώς!");
+    //           } else if (isEditing && isUser) {
+    //             setBody("Η εταιρεία ενημερώθηκε επιτυχώς!");
+    //           }
 
-              if(!isUser) {
-                onCustomerAdded();
-              }             
+    //           if(!isUser) {
+    //             onCustomerAdded();
+    //           }             
               
-              if(isUser) {
-                companyChange();
-              }
+    //           if(isUser) {
+    //             companyChange();
+    //           }
               
-              handleCloseModal();
-          })
-          .catch(error => {
-              setLoading(false);
-              setResultOpen(true);
-              setTitle("Σφάλμα");
-              setStatus(error.response.status);
-              setBody(`${error.response.data.error}`);
-              handleCloseModal();
-          });
-      } 
+    //           handleCloseModal();
+    //       })
+    //       .catch(error => {
+    //           setLoading(false);
+    //           setResultOpen(true);
+    //           setTitle("Σφάλμα");
+    //           setStatus(error.response.status);
+    //           setBody(`${error.response.data.error}`);
+    //           handleCloseModal();
+    //       });
+    //   } 
     
 
 
     return (<React.Fragment>
       <Modal
-        size="lg"
+        size="xl"
         show={showModal}
         onHide={handleCloseModal}
         aria-labelledby="example-modal-sizes-title-lg"
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-modal-sizes-title-lg">
-            {modalTitle}
+            Έκδοση παραστατικού
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -193,7 +193,7 @@ const CustomerModal = ({ showModal, handleCloseModal, onCustomerAdded, isEditing
                     <Form.Group className="mb-3" as={Col} controlId="formGridEmail">
                         <Form.Label>ΑΦΜ</Form.Label>
                         <InputGroup>
-                            <Form.Control className='form-group-style' type="text" placeholder="ΑΦΜ πελάτη" name="afm" value={formData.afm} onChange={handleInputChange} />
+                            <Form.Control className='form-group-style' type="text" placeholder="ΑΦΜ" name="afm" value={formData.afm} onChange={handleInputChange} />
                             <Button type="button" style={{borderColor:'#dee2e6', padding:'0.4rem', display:'flex', alignItems:'center', justifyContent:'center'}} variant="outline-secondary" onClick={searchWithAfm} className="cursor-pointer">
                                 {!loading &&
                                   <i style={{paddingLeft:'0.6rem'}} className="feather icon-search"></i>
@@ -215,14 +215,12 @@ const CustomerModal = ({ showModal, handleCloseModal, onCustomerAdded, isEditing
                         <Form.Label>Όνομα</Form.Label>
                         <Form.Control className='form-group-style' type="text" placeholder="Όνομα" name="name" value={formData.name} onChange={handleInputChange} />
                     </Form.Group>
-                </Row>
-                  <Row gy={3}>
                     <CountryDropDown className="mb-3" formData={formData} setFormData={setFormData} />
                     <Form.Group className="mb-3" as={Col} controlId="formGridPassword">
                       <Form.Label>Πόλη</Form.Label>
                       <Form.Control className='form-group-style' type="text" placeholder="Πόλη" name="city" value={formData.city} onChange={handleInputChange} />
                     </Form.Group>
-                  </Row>
+                </Row>
                   <Row gy={3}>
                     <Form.Group className="mb-2" as={Col} controlId="formGridEmail">
                       <Form.Label>Διεύθυνση</Form.Label>
@@ -236,30 +234,32 @@ const CustomerModal = ({ showModal, handleCloseModal, onCustomerAdded, isEditing
                       <Form.Label>Ταχυδρομικός κώδικας</Form.Label>
                       <Form.Control className='form-group-style' type="number" placeholder="ΤΚ" name="postal_code" value={formData.postal_code} onChange={handleInputChange} />
                     </Form.Group>
-                  </Row>
-                  <Row gy={3}>
-                      <Form.Group className="mb-3" as={Col} controlId="formGridEmail">
-                          <Form.Label>ΔΟΥ</Form.Label>
-                          <Form.Control className='form-group-style' type="text" placeholder="ΔΟΥ" name="doy" value={formData.doy} onChange={handleInputChange} />
-                      </Form.Group>
-                      <Form.Group className="mb-3" as={Col} controlId="formGridPassword">
-                          <Form.Label>Αντικείμενο απασχόλησης</Form.Label>
-                          <Form.Control className='form-group-style' type="text" placeholder="Αντικείμενο" name="work" value={formData.work} onChange={handleInputChange} />
-                      </Form.Group>
+                    <Form.Group className="mb-3" as={Col} controlId="formGridEmail">
+                        <Form.Label>ΔΟΥ</Form.Label>
+                        <Form.Control className='form-group-style' type="text" placeholder="ΔΟΥ" name="doy" value={formData.doy} onChange={handleInputChange} />
+                    </Form.Group>
                   </Row>
                   <Row style={{paddingBottom:'2rem'}} gy={3}>
-                      <Form.Group className="mb-3" as={Col} controlId="formGridEmail">
-                          <Form.Label>E-mail</Form.Label>
-                          <Form.Control className='form-group-style' type="email" placeholder="E-mail" name="email" value={formData.email} onChange={handleInputChange} />
-                      </Form.Group>
-                      <Form.Group className="mb-3" as={Col} controlId="formGridPassword">
-                          <Form.Label>Τηλέφωνο επικοινωνίας</Form.Label>
-                          <Form.Control className='form-group-style' type="number" placeholder="Τηλέφωνο" name="tel_number" value={formData.tel_number} onChange={handleInputChange} />
-                      </Form.Group>
+                    <Form.Group className="mb-3" as={Col} controlId="formGridPassword">
+                        <Form.Label>Αντικείμενο απασχόλησης</Form.Label>
+                        <Form.Control className='form-group-style' type="text" placeholder="Αντικείμενο" name="work" value={formData.work} onChange={handleInputChange} />
+                    </Form.Group>
+                    <Form.Group className="mb-3" as={Col} controlId="formGridEmail">
+                        <Form.Label>E-mail</Form.Label>
+                        <Form.Control className='form-group-style' type="email" placeholder="E-mail" name="email" value={formData.email} onChange={handleInputChange} />
+                    </Form.Group>
+                    <Form.Group className="mb-3" as={Col} controlId="formGridPassword">
+                        <Form.Label>Τηλέφωνο επικοινωνίας</Form.Label>
+                        <Form.Control className='form-group-style' type="number" placeholder="Τηλέφωνο" name="tel_number" value={formData.tel_number} onChange={handleInputChange} />
+                    </Form.Group>
+                    <Form.Group className="mb-3" as={Col} controlId="formGridPassword">
+                        <Form.Label>Η/νία έκδοσης</Form.Label>
+                        <Form.Control className='form-group-style' type="date" placeholder="Η/νία έκδοσης" name="date" value={formData.date} onChange={handleInputChange} />
+                    </Form.Group>
                   </Row>
-                  <Button onClick={handleSubmit} className='btn_success'>
+                  <Button className='btn_success'>
                       <i className="feather icon-save" />
-                      Αποθήκευση
+                        Έκδοση
                       {loading &&
                         <Spinner
                           style={{marginLeft:'0.5rem'}}
@@ -283,4 +283,4 @@ const CustomerModal = ({ showModal, handleCloseModal, onCustomerAdded, isEditing
     );
 }
 
-export default CustomerModal;
+export default InvoiceModal;

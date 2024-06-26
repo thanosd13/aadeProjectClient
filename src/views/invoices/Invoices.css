@@ -1,0 +1,42 @@
+/* Invoices.css */
+.fade-enter {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 600ms, transform 600ms;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit.fade-exit-active {
+  opacity: 0;
+  transition: opacity 600ms;
+}
+
+.header-category {
+  padding-bottom: 2rem;
+  text-align: center;
+}
+  
+.result {
+    color: rgb(245, 22, 22);
+    font-weight: bold;
+    font-style: italic;
+}
+
+
+.custom-dropdown {
+  appearance: none;
+  background-color: white;
+  background-image: url('../../assets/images/down-arrow.png');
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  padding-right: 35px;
+}

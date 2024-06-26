@@ -109,6 +109,7 @@ return (
             showModal={showModal}
             handleCloseModal={handleCloseModal}
             onCustomerAdded={handleCustomerAdded}
+            isUser={false}
             isEditing={isEditing}
             customerData={currentCustomer}
         />

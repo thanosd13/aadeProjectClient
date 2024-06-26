@@ -12,21 +12,21 @@ const menuItems = {
       title: 'Παραστατικά',
       type: 'item',
       icon: 'feather icon-file',
-      url: '/app/parastatika'
+      url: '/app/invoices'
     },
     {
       id: 'eidh',
       title: 'Είδη',
       type: 'item',
       icon: 'feather icon-shopping-cart',
-      url: '/app/eidh'
+      url: '/app/products'
     },
     {
       id: 'epafes',
       title: 'Επαφές',
       type: 'item',
       icon: 'feather icon-users',
-      url: '/app/epafes'
+      url: '/app/customers'
     },
     // {          
     //     id: 'navigation',

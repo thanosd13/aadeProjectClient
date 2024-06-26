@@ -1,16 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { FaBuilding, FaUsers, FaPenAlt, FaInfoCircle, FaShopify, FaFile} from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import { FaBuilding, FaUsers, FaPenAlt, FaShopify, FaFile, FaPlus, FaEye} from 'react-icons/fa';
+import UserService from '../../services/UserService';
+import CustomerModal from '../../components/Modals/CustomerModal';
+import { useNavigate } from 'react-router-dom';
 
-
-const dashSalesData = [
-    { title: 'Daily Sales', amount: '$249.95', icon: 'icon-arrow-up text-c-green', value: 50, class: 'progress-c-theme' },
-    { title: 'Monthly Sales', amount: '$2.942.32', icon: 'icon-arrow-down text-c-red', value: 36, class: 'progress-c-theme2' },
-    { title: 'Yearly Sales', amount: '$8.638.32', icon: 'icon-arrow-up text-c-green', value: 70, color: 'progress-c-theme' }
-  ];
 
 const HomePage = () => {
+
+    const[userData, setUserData] = useState([]);
+    const[showModal, setShowModal] = useState(false);
+    const[isEditing, setIsEditing] = useState(false);
+
+    const id = useSelector(state => state.auth.user.user.id);
+    const navigate = useNavigate();
+
+    const handleOpenModal = (isEditing) => {
+        setShowModal(true);
+        setIsEditing(isEditing);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+      
+
+    const findUserData = () => {
+
+        UserService.findUserData(id)
+        .then(response => {
+            if(response.status === 200) {
+                setUserData(response.data);
+            }
+        }).catch(error => {
+            if(error.response.status === 404) {
+                setUserData([]); 
+            }
+        });
+    }
+
+    useEffect(() => {
+        findUserData();
+    }, []);
 
     return(
         <React.Fragment>
@@ -27,13 +59,19 @@ const HomePage = () => {
                             <div className="row d-flex align-items-center">
                                 <div className="col-9">
                                     <span style={{fontWeight:'bold', fontSize:'medium'}}>
-                                        ΑΦΜ: 095566320
+                                        ΑΦΜ: {userData.length>0 ? userData[0].afm : '-'}
                                     </span>
                                 </div>
                                 <div className="col-3 text-end">
-                                    <button style={{color: '#ffffff', borderRadius: '10px', padding:'0.6rem !important'}} className="btn btn-warning">
-                                        <FaPenAlt />
-                                    </button>
+                                    {userData.length>0 ?
+                                        <button onClick={()=>handleOpenModal(true)} style={{color: '#ffffff', borderRadius: '10px', padding:'0.6rem !important'}} className="btn btn-warning">
+                                            <FaPenAlt />
+                                        </button>
+                                        :
+                                        <button onClick={()=>handleOpenModal(false)} style={{color: '#ffffff', borderRadius: '10px', padding:'0.6rem !important'}} className="btn btn_success">
+                                            <FaPlus />
+                                        </button>
+                                    }
                                 </div>
                             </div>
                         </Card.Body>
@@ -55,8 +93,8 @@ const HomePage = () => {
                                     </span>
                                 </div>
                                 <div className="col-3 text-end">
-                                    <button style={{color: '#ffffff', borderRadius: '10px'}} className="btn btn-info">
-                                        <FaInfoCircle />
+                                    <button onClick={()=> navigate("/app/epafes")} style={{color: '#ffffff', borderRadius: '10px'}} className="btn btn-info">
+                                        <FaEye />
                                     </button>
                                 </div>
                             </div>
@@ -79,8 +117,8 @@ const HomePage = () => {
                                     </span>
                                 </div>
                                 <div className="col-3 text-end">
-                                    <button style={{color: '#ffffff', borderRadius: '10px', padding:'0.6rem !important'}} className="btn btn-info">
-                                        <FaInfoCircle />
+                                    <button onClick={()=> navigate("/app/eidh")} style={{color: '#ffffff', borderRadius: '10px', padding:'0.6rem !important'}} className="btn btn-info">
+                                        <FaEye />
                                     </button>
                                 </div>
                             </div>
@@ -104,7 +142,7 @@ const HomePage = () => {
                                 </div>
                                 <div className="col-3 text-end">
                                     <button style={{color: '#ffffff', borderRadius: '10px', padding:'0.6rem !important'}} className="btn btn-info">
-                                        <FaInfoCircle />
+                                        <FaEye />
                                     </button>
                                 </div>
                             </div>
@@ -147,6 +185,14 @@ const HomePage = () => {
                     </Card>
                 </Col>
             </Row>
+            <CustomerModal
+                showModal={showModal}
+                handleCloseModal={handleCloseModal}
+                isEditing={isEditing}
+                isUser={true}
+                userData={userData[0]}
+                companyChange={findUserData}
+            />
         </React.Fragment>
     )
 

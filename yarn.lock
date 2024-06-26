@@ -9673,6 +9673,11 @@ tr46@^2.1.0:
   dependencies:
     punycode "^2.1.1"
 
+transition-hook@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.npmjs.org/transition-hook/-/transition-hook-1.5.2.tgz"
+  integrity sha512-zVW5wP+hzOCk56jU5V5GAIsuaf+gZv43pzxyimXQ74JnD1yoprxTfzoPjr0yjC/Mrc9JyCh3Wb6UhXD+8dlO4w==
+
 tryer@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/tryer/-/tryer-1.0.1.tgz"

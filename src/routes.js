@@ -62,7 +62,12 @@ const routes = [
       },
       {
         exact: 'true',
-        path: '/app/epafes',
+        path: '/app/invoices',
+        element: lazy(() => import('./views/invoices/Invoices'))
+      },
+      {
+        exact: 'true',
+        path: '/app/customers',
         element: lazy(() => import('./views/customers/Customers'))
       },
       {
@@ -72,7 +77,7 @@ const routes = [
       },
       {
         exact: 'true',
-        path: '/app/eidh',
+        path: '/app/products',
         element: lazy(() => import('./views/products/Products'))
       },
       {
@@ -133,7 +138,7 @@ const routes = [
       {
         path: '*',
         exact: 'true',
-        element: () => <Navigate  to={localStorage.getItem("user") ? '/app/epafes' : '/login'} />
+        element: () => <Navigate  to={localStorage.getItem("user") ? '/app/home' : '/login'} />
       }
     ]
   }

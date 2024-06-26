@@ -135,7 +135,7 @@ const ProductModal = ({ showModal, handleCloseModal, onProductAdded, isEditing, 
                             <Form.Control className='form-group-style' placeholder="Τελική τιμή" type="number" step="0.01" name="final_price" value={formData.final_price} onChange={handleInputChange} />
                     </Form.Group>
                 </Row>
-                <Button onClick={handleSubmit   } variant="success">
+                <Button onClick={handleSubmit} className='btn_success'>
                     <i className="feather icon-save" />
                     Αποθήκευση
                     {loading &&
@@ -149,7 +149,7 @@ const ProductModal = ({ showModal, handleCloseModal, onProductAdded, isEditing, 
                     />
                     }
                 </Button>
-                <Button variant="danger" onClick={handleCloseModal}>
+                <Button className='btn_danger' variant="danger" onClick={handleCloseModal}>
                     <i className="feather icon-slash mx-1" />
                     Ακύρωση
                 </Button>
