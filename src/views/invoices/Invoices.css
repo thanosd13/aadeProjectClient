@@ -1,4 +1,19 @@
 /* Invoices.css */
+
+.table-styling {
+  overflow: visible !important;
+}
+
+.table-styling th, .table-styling td {
+  overflow: visible !important;
+  position: relative;  /* Δίνει στα κελιά τη δυνατότητα να επιτρέπουν overflow */
+}
+
+/* Εφαρμόζει τα κατάλληλα styles στο dropdown menu */
+.react-select__menu {
+  z-index: 1050 !important; /* Εξασφαλίζει ότι το menu θα είναι πάνω από άλλα στοιχεία */
+}
+
 .fade-enter {
     opacity: 0;
     transform: translateY(-20px);
@@ -39,4 +54,12 @@
   background-repeat: no-repeat;
   background-size: 20px;
   padding-right: 35px;
+}
+
+.icon {
+  padding-right: 0.5rem;
+}
+
+.products {
+  padding-bottom: 7rem !important;
 }

@@ -14,6 +14,7 @@ import CustomerService from "../../services/CustomerService";
 import CountryDropdown from "../../components/Generic/CountryDropDown";
 import { CSSTransition } from "react-transition-group";
 import Spinner from "react-bootstrap/Spinner";
+import CreatableSelect from "react-select/creatable";
 import "./Invoices.css";
 import {
   faBan,
@@ -22,19 +23,20 @@ import {
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ProductService from "../../services/ProductService";
 
 const Invoices = () => {
-
   const getTodayDate = () => {
     const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // January is 0!
     const year = today.getFullYear();
     return `${year}-${month}-${day}`;
   };
 
-  
   const [showForm, setShowForm] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [productsList, setProductsList] = useState([]);
   const [error, setError] = useState("");
   const [today, setToday] = useState("");
   const [date, setDate] = useState(getTodayDate());
@@ -57,7 +59,7 @@ const Invoices = () => {
     date: "",
   });
 
-
+  const menuPortalTarget = document.body;
 
   const handleOpenForm = () => {
     setShowForm((prevState) => !prevState);
@@ -69,10 +71,10 @@ const Invoices = () => {
 
   const handleInputName = (event) => {
     const name = event.target.value;
-    const customer = customers.find(c => c.name === name);
-  
+    const customer = customers.find((c) => c.name === name);
+
     if (customer) {
-      setCustomerData(prevCustomerData => ({
+      setCustomerData((prevCustomerData) => ({
         ...prevCustomerData,
         afm: customer.afm,
         name: customer.name,
@@ -84,12 +86,10 @@ const Invoices = () => {
         doy: customer.doy,
         work: customer.work,
         email: customer.email,
-        tel_number: customer.tel_number
-        
+        tel_number: customer.tel_number,
       }));
     }
   };
-
 
   const handleInputChange = (event) => {
     setCustomerData({
@@ -103,6 +103,18 @@ const Invoices = () => {
       .then((response) => {
         if (response.status === 200) {
           setCustomers(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const getProducts = () => {
+    ProductService.getProducts(id)
+      .then((response) => {
+        if (response.status === 200) {
+          setProductsList(response.data);
         }
       })
       .catch((error) => {
@@ -151,13 +163,64 @@ const Invoices = () => {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().substring(0, 10); // formats to "YYYY-MM-DD"
     setToday(formattedDate);
-    setCustomerData(prev => ({ ...prev, date: formattedDate })); // Ensure the form's date is also set
+    setCustomerData((prev) => ({ ...prev, date: formattedDate })); // Ensure the form's date is also set
 
     if (showForm) {
-        getCustomers();
+      getCustomers();
+      getProducts();
     }
-}, [showForm]);
+  }, [showForm]);
 
+  const addProduct = () => {
+    const newProduct = {
+      id: products.length + 1, // Increment the product id
+      name: "",
+      price: "",
+      units: "",
+      vat: "",
+      priceWithVAT: "",
+    };
+    setProducts([...products, newProduct]);
+  };
+
+  // Function to handle changes in product inputs
+  const handleProductChange = (event, index) => {
+    const { name, value } = event.target;
+    const updatedProducts = products.map((product, i) => {
+      if (i === index) {
+        return { ...product, [name]: value };
+      }
+      return product;
+    });
+    setProducts(updatedProducts);
+  };
+
+  const removeProduct = (index) => {
+    setProducts((currentProducts) =>
+      currentProducts.filter((_, i) => i !== index)
+    );
+  };
+
+  const handleProductSelect = (newValue, actionMeta, index) => {
+    console.log(newValue, actionMeta);
+    const updatedProducts = products.map((product, i) => {
+      if (i === index) {
+        return { ...product, name: newValue ? newValue.value : "" };
+      }
+      return product;
+    });
+    setProducts(updatedProducts);
+  };
+
+  const productOptions = productsList.map((product) => ({
+    value: product.name,
+    label: product.name,
+  }));
+
+  const customStyles = {
+    menuPortal: (base) => ({ ...base, zIndex: 9999 }), // Προσαρμόζει το z-index για το portal
+    menu: (provided) => ({ ...provided, zIndex: "9999 !important" }), // Διασφαλίζει ότι το menu θα είναι πάνω από άλλα στοιχεία
+  };
 
   return (
     <React.Fragment>
@@ -208,21 +271,30 @@ const Invoices = () => {
             <Col xl={12} xxl={12}>
               <Card style={{ padding: "0.4rem" }}>
                 <Card.Body>
-                  <h4 className="header-category">Πελάτης</h4>
+                  <h4 className="header-category">
+                    <i className="feather icon-user icon" />
+                    Πελάτης
+                  </h4>
                   <Form>
                     <Row gy={3}>
-                    <Form.Group as={Col} controlId="formGridCustomerName">
-                      <Form.Label>Όνομα πελάτη</Form.Label>
-                      <Form.Control as="select" value={customerData.name} onChange={handleInputName} name="name" className="custom-dropdown">
-                        <option value="">Επιλέξτε</option>
-                        {customers.map((customer, index) => (
-                          <option key={index} value={customer.name}>
-                            {customer.name}
-                          </option>
-                        ))}
-                      </Form.Control>
-                    </Form.Group>
-                      
+                      <Form.Group as={Col} controlId="formGridCustomerName">
+                        <Form.Label>Όνομα πελάτη</Form.Label>
+                        <Form.Control
+                          as="select"
+                          value={customerData.name}
+                          onChange={handleInputName}
+                          name="name"
+                          className="custom-dropdown"
+                        >
+                          <option value="">Επιλέξτε</option>
+                          {customers.map((customer, index) => (
+                            <option key={index} value={customer.name}>
+                              {customer.name}
+                            </option>
+                          ))}
+                        </Form.Control>
+                      </Form.Group>
+
                       <Form.Group
                         className="mb-3"
                         as={Col}
@@ -414,12 +486,112 @@ const Invoices = () => {
                           placeholder="Η/νία έκδοσης"
                           name="date"
                           value={customerData.date}
-                          max={getTodayDate()} 
+                          max={getTodayDate()}
                           onChange={handleInputChange}
                         />
                       </Form.Group>
                     </Row>
-                    <h4 className="header-category">Προϊόντα</h4>
+                    <h4 className="header-category">
+                      <i className="feather icon-shopping-cart icon" />
+                      Προϊόντα
+                    </h4>
+                    <div className="products">
+                      <div className="d-flex justify-content-end mb-3">
+                        <Button variant="primary" onClick={addProduct}>
+                          <i className="feather icon-plus" />
+                          Προσθήκη προϊόντος
+                        </Button>
+                      </div>
+                      <Table responsive className="table-styling">
+                        <thead className="table-primary">
+                          <tr>
+                            <th>ΑΑ</th>
+                            <th>Όνομα</th>
+                            <th>Τιμή</th>
+                            <th>Μονάδες μέτρησης</th>
+                            <th>Φ.Π.Α</th>
+                            <th>Τιμή με Φ.Π.Α</th>
+                            <th>Ενέργειες</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {products.map((product, index) => (
+                            <tr key={index}>
+                              <td>{product.id}</td>
+                              <td>
+                                <CreatableSelect
+                                  isClearable
+                                  onChange={(newValue, actionMeta) =>
+                                    handleProductSelect(
+                                      newValue,
+                                      actionMeta,
+                                      index
+                                    )
+                                  }
+                                  options={productOptions}
+                                  placeholder="Select or type product name"
+                                  styles={customStyles}
+                                  menuPortalTarget={menuPortalTarget} // Εφαρμογή του portal target
+                                  // άλλες props...
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="text"
+                                  value={product.price}
+                                  name="price"
+                                  onChange={(e) =>
+                                    handleProductChange(e, index)
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="text"
+                                  value={product.units}
+                                  name="units"
+                                  onChange={(e) =>
+                                    handleProductChange(e, index)
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="text"
+                                  value={product.vat}
+                                  name="vat"
+                                  onChange={(e) =>
+                                    handleProductChange(e, index)
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="text"
+                                  value={product.priceWithVAT}
+                                  name="priceWithVAT"
+                                  onChange={(e) =>
+                                    handleProductChange(e, index)
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <button
+                                  onClick={() => removeProduct(index)}
+                                  style={{
+                                    color: "#ffffff",
+                                    borderRadius: "20px",
+                                  }}
+                                  className="btn btn-danger"
+                                >
+                                  <FontAwesomeIcon icon={faBan} />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </div>
                     <Button className="btn_success">
                       <i className="feather icon-save" />
                       Έκδοση

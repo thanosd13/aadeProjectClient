@@ -77,40 +77,39 @@ return (
               <Button onClick={() => handleOpenModal(null)} variant="primary">Προσθήκη</Button>
             </Card.Header>
             <Card.Body>
-            <Table responsive className="table-styling">
-              <thead className="table-primary">
-                <tr>
-                  <th>ΑΑ</th>
-                  <th>Όνομα</th>
-                  <th>Τιμή</th>
-                  <th>Μονάδες μέτρησης</th>
-                  <th>Φ.Π.Α</th>
-                  <th>Τιμή με Φ.Π.Α</th>
-                  <th>Ενέργειες</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product, index) => (
-                  <tr key={index}>
-                    <th scope="row">{index+1}</th>
-                    <td>{product.name}</td>
-                    <td>{product.price}</td>
-                    <td>{product.type}</td>
-                    <td>{product.fpa}</td>
-                    <td>{product.final_price}</td>
-                    <td>
-                      <button onClick={() => handleOpenModal(product)} style={{color: '#ffffff', borderRadius: '20px'}} className="btn btn-warning">
-                          <FontAwesomeIcon icon={faPenToSquare}/>
-                      </button>
-                      <button onClick={() => handleDelete(product.id)} style={{color: '#ffffff', borderRadius: '20px'}} className="btn btn-danger">
-                          <FontAwesomeIcon icon={faBan}/>
-                      </button>
-                    </td>
+              <Table responsive className="table-styling">
+                <thead className="table-primary">
+                  <tr>
+                    <th>ΑΑ</th>
+                    <th>Όνομα</th>
+                    <th>Τιμή</th>
+                    <th>Μονάδες μέτρησης</th>
+                    <th>Φ.Π.Α</th>
+                    <th>Τιμή με Φ.Π.Α</th>
+                    <th>Ενέργειες</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-
+                </thead>
+                <tbody>
+                  {products.map((product, index) => (
+                    <tr key={index}>
+                      <th scope="row">{index+1}</th>
+                      <td>{product.name}</td>
+                      <td>{product.price}</td>
+                      <td>{product.type}</td>
+                      <td>{product.fpa}</td>
+                      <td>{product.final_price}</td>
+                      <td>
+                        <button onClick={() => handleOpenModal(product)} style={{color: '#ffffff', borderRadius: '20px'}} className="btn btn-warning">
+                            <FontAwesomeIcon icon={faPenToSquare}/>
+                        </button>
+                        <button onClick={() => handleDelete(product.id)} style={{color: '#ffffff', borderRadius: '20px'}} className="btn btn-danger">
+                            <FontAwesomeIcon icon={faBan}/>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             </Card.Body>
         </Card>
         <ProductModal 
