@@ -7,6 +7,15 @@ class PdfService {
     insertPdfData(formData,id) {
         return axios.post(MIDDLEWARE_ULR + "/pdf/"+id, { formData }, { headers: AuthHeader() });
     }
+
+    updatePdfData(formData,id) {
+        return axios.put(MIDDLEWARE_ULR + "/pdf/"+id, { formData }, { headers: AuthHeader() });
+    }
+
+
+    getPdfData(id) {
+        return axios.get(MIDDLEWARE_ULR + "/pdf/"+id, { headers: AuthHeader() });
+    }
 }
 
 export default new PdfService();

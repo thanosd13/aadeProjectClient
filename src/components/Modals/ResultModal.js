@@ -13,7 +13,7 @@ const ResultModal = (props) => {
                 <Modal.Header closeButton>
                     <Modal.Title className="modal-title">{props.title}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body className="modal-body">
+                <Modal.Body className="modal-body-result">
                     {(props.status === 200 || props.status === 201 || props.status === 204) ?
                         <span className="success-icon">
                             <FontAwesomeIcon icon={faCheck} />

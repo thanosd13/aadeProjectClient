@@ -20,11 +20,11 @@
     text-align: center !important;
 }
 
-.modal-body {
-    /* display: flex;
+.modal-body-result {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1rem; */
+    justify-content: start;
+    gap: 1rem;
 }
 
 .success-icon {
