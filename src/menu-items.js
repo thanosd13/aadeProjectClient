@@ -57,64 +57,36 @@ const menuItems = {
     //       }
     //     ]
     //   },
-    // {
-    //   id: 'ui-element',
-    //   title: 'UI ELEMENT',
-    //   type: 'group',
-    //   icon: 'icon-ui',
-    //   children: [
-    //     {
-    //       id: 'component',
-    //       title: 'Component',
-    //       type: 'collapse',
-    //       icon: 'feather icon-box',
-    //       children: [
-    //         {
-    //           id: 'button',
-    //           title: 'Button',
-    //           type: 'item',
-    //           url: '/basic/button'
-    //         },
-    //         {
-    //           id: 'badges',
-    //           title: 'Badges',
-    //           type: 'item',
-    //           url: '/basic/badges'
-    //         },
-    //         {
-    //           id: 'breadcrumb',
-    //           title: 'Breadcrumb',
-    //           type: 'item',
-    //           url: '/basic/breadcrumb'
-    //         },
-    //         {
-    //           id: 'pagination',
-    //           title: 'Pagination',
-    //           type: 'item',
-    //           url: '/basic/pagination'
-    //         },
-    //         {
-    //           id: 'collapse',
-    //           title: 'Collapse',
-    //           type: 'item',
-    //           url: '/basic/collapse'
-    //         },
-    //         {
-    //           id: 'tabs-pills',
-    //           title: 'Tabs & Pills',
-    //           type: 'item',
-    //           url: '/basic/tabs-pills'
-    //         },
-    //         {
-    //           id: 'typography',
-    //           title: 'Typography',
-    //           type: 'item',
-    //           url: '/basic/typography'
-    //         }
-    //       ]
-    //     }
-    //   ]
-    // },
+    {
+      id: 'ui-element',
+      title: 'UI ELEMENT',
+      type: 'group',
+      icon: 'icon-ui',
+      children: [
+        {
+          id: 'component',
+          title: 'Ρυθμίσεις',
+          type: 'collapse',
+          icon: 'feather icon-settings',
+          children: [
+            {
+              id: 'edit_pdf',
+              title: 'Επξεργασία παραστατικού',
+              type: 'item',
+              icon: 'feather icon-edit',
+              url: '/app/pdf/edit-template'
+            },
+            {
+              id: 'my_account',
+              title: 'O λογαριασμός μου',
+              type: 'item',
+              icon: 'feather icon-user',
+              url: '/'
+            }
+          ]
+        }
+      ]
+    },
     // {
     //   id: 'ui-forms',
     //   title: 'FORMS & TABLES',

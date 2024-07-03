@@ -62,6 +62,16 @@ const routes = [
       },
       {
         exact: 'true',
+        path: '/app/pdf',
+        element: lazy(() => import('./components/Generic/GeneratePdf'))
+      },
+      {
+        exact: 'true',
+        path: '/app/pdf/edit-template',
+        element: lazy(() => import('./views/pdf/PdfEditTemplate'))
+      },
+      {
+        exact: 'true',
         path: '/app/invoices',
         element: lazy(() => import('./views/invoices/Invoices'))
       },

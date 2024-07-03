@@ -15,6 +15,7 @@ import CountryDropdown from "../../components/Generic/CountryDropDown";
 import { CSSTransition } from "react-transition-group";
 import Spinner from "react-bootstrap/Spinner";
 import CreatableSelect from "react-select/creatable";
+import PriceDropDownMenu from "../../components/Generic/PriceDropDownMenu";
 import "./Invoices.css";
 import {
   faBan,
@@ -24,6 +25,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProductService from "../../services/ProductService";
+import FpaDropDownMenu from "../../components/Generic/FpaDropDownMenu";
 
 const Invoices = () => {
   const getTodayDate = () => {
@@ -63,10 +65,6 @@ const Invoices = () => {
 
   const handleOpenForm = () => {
     setShowForm((prevState) => !prevState);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
   };
 
   const handleInputName = (event) => {
@@ -175,20 +173,27 @@ const Invoices = () => {
     const newProduct = {
       id: products.length + 1, // Increment the product id
       name: "",
-      price: "",
-      units: "",
-      vat: "",
-      priceWithVAT: "",
+      price: 0.0,
+      type: "",
+      fpa: "",
+      final_price: 0.0,
     };
     setProducts([...products, newProduct]);
   };
-
+  
   // Function to handle changes in product inputs
   const handleProductChange = (event, index) => {
     const { name, value } = event.target;
     const updatedProducts = products.map((product, i) => {
       if (i === index) {
-        return { ...product, [name]: value };
+        let updatedProduct = { ...product, [name]: value };
+        if (name === "price" || name === "fpa") {
+          const price = parseFloat(updatedProduct.price) || 0;
+          const fpa = parseFloat(updatedProduct.fpa) || 0;
+          const finalPrice = price + price * (fpa / 100);
+          updatedProduct.final_price = finalPrice.toFixed(2);
+        }
+        return updatedProduct;
       }
       return product;
     });
@@ -202,10 +207,47 @@ const Invoices = () => {
   };
 
   const handleProductSelect = (newValue, actionMeta, index) => {
-    console.log(newValue, actionMeta);
+    if (!Array.isArray(products)) return;
+
+    const selectedProduct = productsList.find((c) => c.name === newValue?.value);
+
     const updatedProducts = products.map((product, i) => {
       if (i === index) {
-        return { ...product, name: newValue ? newValue.value : "" };
+        const price = selectedProduct ? parseFloat(selectedProduct.price) : 0.0;
+        const fpa = selectedProduct ? parseFloat(selectedProduct.fpa) : 0.0;
+        const finalPrice = price + price * (fpa / 100);
+        return {
+          ...product,
+          name: newValue ? newValue.value : "",
+          price: price.toFixed(2),
+          type: selectedProduct ? selectedProduct.type : "",
+          fpa: fpa,
+          final_price: finalPrice.toFixed(2),
+        };
+      }
+      return product;
+    });
+
+    setProducts(updatedProducts);
+  };
+
+  const handleTypeChange = (value, index) => {
+    const updatedProducts = products.map((product, i) => {
+      if (i === index) {
+        return { ...product, type: value };
+      }
+      return product;
+    });
+    setProducts(updatedProducts);
+  };
+
+  const handleFpaChange = (value, index) => {
+    const updatedProducts = products.map((product, i) => {
+      if (i === index) {
+        const price = parseFloat(product.price) || 0;
+        const fpa = parseFloat(value) || 0;
+        const finalPrice = price + price * (fpa / 100);
+        return { ...product, fpa: value, final_price: finalPrice.toFixed(2) };
       }
       return product;
     });
@@ -218,8 +260,8 @@ const Invoices = () => {
   }));
 
   const customStyles = {
-    menuPortal: (base) => ({ ...base, zIndex: 9999 }), // Προσαρμόζει το z-index για το portal
-    menu: (provided) => ({ ...provided, zIndex: "9999 !important" }), // Διασφαλίζει ότι το menu θα είναι πάνω από άλλα στοιχεία
+    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+    menu: (provided) => ({ ...provided, zIndex: "9999 !important" }),
   };
 
   return (
@@ -515,7 +557,7 @@ const Invoices = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {products.map((product, index) => (
+                          {Array.isArray(products) && products.map((product, index) => (
                             <tr key={index}>
                               <td>{product.id}</td>
                               <td>
@@ -529,16 +571,17 @@ const Invoices = () => {
                                     )
                                   }
                                   options={productOptions}
-                                  placeholder="Select or type product name"
+                                  placeholder="Επιλέξτε ή πληκτρολογήστε"
                                   styles={customStyles}
-                                  menuPortalTarget={menuPortalTarget} // Εφαρμογή του portal target
-                                  // άλλες props...
+                                  menuPortalTarget={menuPortalTarget}
                                 />
                               </td>
                               <td>
                                 <input
+                                  className="table-input"
+                                  step="0.01"
                                   type="text"
-                                  value={product.price}
+                                  value={parseFloat(product.price).toFixed(2)}
                                   name="price"
                                   onChange={(e) =>
                                     handleProductChange(e, index)
@@ -546,30 +589,23 @@ const Invoices = () => {
                                 />
                               </td>
                               <td>
-                                <input
-                                  type="text"
-                                  value={product.units}
-                                  name="units"
-                                  onChange={(e) =>
-                                    handleProductChange(e, index)
-                                  }
+                                <PriceDropDownMenu
+                                  value={product.type}
+                                  onChange={(value) => handleTypeChange(value, index)}
+                                />
+                              </td>
+                              <td>
+                                <FpaDropDownMenu
+                                  value={product.fpa}
+                                  onChange={(value) => handleFpaChange(value, index)}
                                 />
                               </td>
                               <td>
                                 <input
+                                  className="table-input"
                                   type="text"
-                                  value={product.vat}
-                                  name="vat"
-                                  onChange={(e) =>
-                                    handleProductChange(e, index)
-                                  }
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  value={product.priceWithVAT}
-                                  name="priceWithVAT"
+                                  value={product.final_price}
+                                  name="final_price"
                                   onChange={(e) =>
                                     handleProductChange(e, index)
                                   }

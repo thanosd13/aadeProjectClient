@@ -24,9 +24,9 @@ const NavGroup = ({ layout, group }) => {
 
   return (
     <React.Fragment>
-      <ListGroup.Item as="li" bsPrefix=" " key={group.id} className="nav-item pcoded-menu-caption">
+      {/* <ListGroup.Item as="li" bsPrefix=" " key={group.id} className="nav-item pcoded-menu-caption">
         <label>{group.title}</label>
-      </ListGroup.Item>
+      </ListGroup.Item> */}
       {navItems}
     </React.Fragment>
   );

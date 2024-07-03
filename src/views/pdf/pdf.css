@@ -1,0 +1,126 @@
+.edit-template {
+    font-family: sans-serif;
+}
+
+.card-form-inputs {
+    display: flex;
+    justify-content: center;
+
+}
+
+.edit-template span {
+    font-size: medium;
+    font-weight: bold;
+}
+
+.colors-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.first-color {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.second-color {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.invoice-date {
+    font-style: italic;
+}
+
+.template-header {
+    font-size: var(--text-size);
+    padding-bottom: 6rem;
+}
+
+.title-type {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #aaaaaa;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.edit-template table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .edit-template th, .edit-template td {
+    padding: 8px;
+    text-align: left;
+  }
+  
+ .data {
+    border-bottom: 2px solid #aaaaaa; /* Add bottom border to each row */
+  }
+
+  .total td {
+    font-weight: bold;
+  }
+
+  .edit-template th {
+    color: #000;
+    font-weight: bold;
+    border-bottom: 2px solid #aaaaaa;
+  }
+
+/* Αλλαγή του χρώματος της γραμμής κύλισης */
+.range::-webkit-slider-runnable-track {
+    background: #a5c7eb; /* Μπλε χρώμα */
+  }
+  
+  .range::-moz-range-track {
+    background: #a5c7eb; /* Μπλε χρώμα */
+  }
+  
+  .range::-ms-track {
+    background: #a5c7eb; /* Μπλε χρώμα */
+  }
+  
+  /* Αλλαγή του χρώματος της λαβής */
+  .range::-webkit-slider-thumb {
+    background: #666258; /* Κίτρινο χρώμα */
+  }
+  
+  .range::-moz-range-thumb {
+    background: #666258; /* Κίτρινο χρώμα */
+  }
+  
+  .range::-ms-thumb {
+    background: #666258; /* Κίτρινο χρώμα */
+  }
+  
+  .header-template h3{
+    text-align: center;
+  }
+
+  .header-template p{
+    font-style: italic;
+    text-align: center;
+  }
+
+  .btn_save {
+    font-weight: bold;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+  }
+
+  .btn_save button {
+    width: 50%;
+  }
