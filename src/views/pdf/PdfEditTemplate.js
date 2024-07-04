@@ -129,7 +129,7 @@ const PdfEditTemplate = () => {
   const handleSubmit = async () => {
     const data = new FormData();
     data.append('textSize', formData.textSize*72/96);
-    data.append('logoSize', formData.logoSize*72/96);
+    data.append('logoSize', formData.logoSize);
     data.append('notes', formData.notes);
     data.append('firstColor', formData.colors[0]);
     data.append('secondColor', formData.colors[1]); 

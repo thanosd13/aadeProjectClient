@@ -64,7 +64,7 @@ const Invoices = () => {
 
   const [invoiceData, setInvoiceData] = useState({
     customerData: {},
-    products: []
+    products: [],
   });
 
   const menuPortalTarget = document.body;
@@ -246,7 +246,9 @@ const Invoices = () => {
   const handleProductSelect = (newValue, actionMeta, index) => {
     if (!Array.isArray(products)) return;
 
-    const selectedProduct = productsList.find((c) => c.name === newValue?.value);
+    const selectedProduct = productsList.find(
+      (c) => c.name === newValue?.value
+    );
 
     const updatedProducts = products.map((product, i) => {
       if (i === index) {
@@ -316,13 +318,32 @@ const Invoices = () => {
   const createInvoice = () => {
     PdfService.createInvoice(invoiceData, id)
       .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));
-        const link = document.createElement('a');
+        const url = window.URL.createObjectURL(
+          new Blob([response.data], { type: "application/pdf" })
+        );
+        const link = document.createElement("a");
         link.href = url;
-        link.setAttribute('download', 'invoice.pdf'); // or any other extension
+        link.setAttribute("download", "invoice.pdf"); //or any other extension
         document.body.appendChild(link);
         link.click();
-        link.parentNode.removeChild(link);
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const previewInvoice = () => {
+    PdfService.createInvoice(invoiceData, id)
+      .then((response) => {
+        const url = window.URL.createObjectURL(
+          new Blob([response.data], { type: "application/pdf" })
+        );
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.src = url;
+        document.body.appendChild(iframe);
+        iframe.contentWindow.print();
       })
       .catch((error) => {
         console.log(error);
@@ -622,80 +643,103 @@ const Invoices = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {Array.isArray(products) && products.map((product, index) => (
-                            <tr key={index}>
-                              <td>{product.id}</td>
-                              <td>
-                                <CreatableSelect
-                                  isClearable
-                                  onChange={(newValue, actionMeta) =>
-                                    handleProductSelect(
-                                      newValue,
-                                      actionMeta,
-                                      index
-                                    )
-                                  }
-                                  options={productOptions}
-                                  placeholder="Επιλέξτε ή πληκτρολογήστε"
-                                  styles={customStyles}
-                                  menuPortalTarget={menuPortalTarget}
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  className="table-input"
-                                  step="0.01"
-                                  type="text"
-                                  value={parseFloat(product.price).toFixed(2)}
-                                  name="price"
-                                  onChange={(e) =>
-                                    handleProductChange(e, index)
-                                  }
-                                />
-                              </td>
-                              <td>
-                                <PriceDropDownMenu
-                                  value={product.type}
-                                  onChange={(value) => handleTypeChange(value, index)}
-                                />
-                              </td>
-                              <td>
-                                <FpaDropDownMenu
-                                  value={product.fpa}
-                                  onChange={(value) => handleFpaChange(value, index)}
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  className="table-input"
-                                  type="text"
-                                  value={product.final_price}
-                                  name="final_price"
-                                  onChange={(e) =>
-                                    handleProductChange(e, index)
-                                  }
-                                />
-                              </td>
-                              <td>
-                                <button
-                                  onClick={() => removeProduct(index)}
-                                  style={{
-                                    color: "#ffffff",
-                                    borderRadius: "20px",
-                                  }}
-                                  className="btn btn-danger"
-                                >
-                                  <FontAwesomeIcon icon={faBan} />
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
+                          {Array.isArray(products) &&
+                            products.map((product, index) => (
+                              <tr key={index}>
+                                <td>{product.id}</td>
+                                <td>
+                                  <CreatableSelect
+                                    isClearable
+                                    onChange={(newValue, actionMeta) =>
+                                      handleProductSelect(
+                                        newValue,
+                                        actionMeta,
+                                        index
+                                      )
+                                    }
+                                    options={productOptions}
+                                    placeholder="Επιλέξτε ή πληκτρολογήστε"
+                                    styles={customStyles}
+                                    menuPortalTarget={menuPortalTarget}
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    className="table-input"
+                                    step="0.01"
+                                    type="text"
+                                    value={parseFloat(product.price).toFixed(2)}
+                                    name="price"
+                                    onChange={(e) =>
+                                      handleProductChange(e, index)
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <PriceDropDownMenu
+                                    value={product.type}
+                                    onChange={(value) =>
+                                      handleTypeChange(value, index)
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <FpaDropDownMenu
+                                    value={product.fpa}
+                                    onChange={(value) =>
+                                      handleFpaChange(value, index)
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    className="table-input"
+                                    type="text"
+                                    value={product.final_price}
+                                    name="final_price"
+                                    onChange={(e) =>
+                                      handleProductChange(e, index)
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <button
+                                    onClick={() => removeProduct(index)}
+                                    style={{
+                                      color: "#ffffff",
+                                      borderRadius: "20px",
+                                    }}
+                                    className="btn btn-danger"
+                                  >
+                                    <FontAwesomeIcon icon={faBan} />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
                         </tbody>
                       </Table>
                     </div>
                     <Button className="btn_success" onClick={createInvoice}>
                       <i className="feather icon-save" />
                       Έκδοση
+                      {loading && (
+                        <Spinner
+                          style={{ marginLeft: "0.5rem" }}
+                          as="span"
+                          animation="border"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </Button>
+                    <Button
+                      className="btn_info"
+                      onClick={previewInvoice}
+                      variant="info"
+                    >
+                      <i className="feather icon-printer" />
+                      Προεπισκόπηση
                       {loading && (
                         <Spinner
                           style={{ marginLeft: "0.5rem" }}
