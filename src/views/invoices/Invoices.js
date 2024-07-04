@@ -26,6 +26,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProductService from "../../services/ProductService";
 import FpaDropDownMenu from "../../components/Generic/FpaDropDownMenu";
+import PdfService from "../../services/PdfService";
 
 const Invoices = () => {
   const getTodayDate = () => {
@@ -61,6 +62,11 @@ const Invoices = () => {
     date: "",
   });
 
+  const [invoiceData, setInvoiceData] = useState({
+    customerData: {},
+    products: []
+  });
+
   const menuPortalTarget = document.body;
 
   const handleOpenForm = () => {
@@ -72,8 +78,7 @@ const Invoices = () => {
     const customer = customers.find((c) => c.name === name);
 
     if (customer) {
-      setCustomerData((prevCustomerData) => ({
-        ...prevCustomerData,
+      const updatedCustomerData = {
         afm: customer.afm,
         name: customer.name,
         country: customer.country,
@@ -85,15 +90,24 @@ const Invoices = () => {
         work: customer.work,
         email: customer.email,
         tel_number: customer.tel_number,
+        date: customerData.date, // Ensure the date is carried over
+      };
+      setCustomerData(updatedCustomerData);
+      setInvoiceData((prevInvoiceData) => ({
+        ...prevInvoiceData,
+        customerData: updatedCustomerData,
       }));
     }
   };
 
   const handleInputChange = (event) => {
-    setCustomerData({
-      ...customerData,
-      [event.target.name]: event.target.value,
-    });
+    const { name, value } = event.target;
+    const updatedCustomerData = { ...customerData, [name]: value };
+    setCustomerData(updatedCustomerData);
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      customerData: updatedCustomerData,
+    }));
   };
 
   const getCustomers = () => {
@@ -130,8 +144,7 @@ const Invoices = () => {
     CustomerService.getByAfm(customerData.afm)
       .then((response) => {
         if (response.status === 200) {
-          setCustomerData({
-            ...customerData,
+          const updatedCustomerData = {
             afm: response.data.afm[0],
             name: response.data.onomasia[0],
             country: "GR",
@@ -141,8 +154,13 @@ const Invoices = () => {
             postal_code: response.data.postal_zip_code[0],
             doy: response.data.doy_descr[0],
             work: response.data.firm_act.firm_act_descr,
-          });
-
+            date: customerData.date, // Ensure the date is carried over
+          };
+          setCustomerData(updatedCustomerData);
+          setInvoiceData((prevInvoiceData) => ({
+            ...prevInvoiceData,
+            customerData: updatedCustomerData,
+          }));
           setError("");
         }
         setLoading(false);
@@ -169,6 +187,14 @@ const Invoices = () => {
     }
   }, [showForm]);
 
+  useEffect(() => {
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      customerData,
+      products,
+    }));
+  }, [customerData, products]);
+
   const addProduct = () => {
     const newProduct = {
       id: products.length + 1, // Increment the product id
@@ -178,10 +204,14 @@ const Invoices = () => {
       fpa: "",
       final_price: 0.0,
     };
-    setProducts([...products, newProduct]);
+    const updatedProducts = [...products, newProduct];
+    setProducts(updatedProducts);
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      products: updatedProducts,
+    }));
   };
-  
-  // Function to handle changes in product inputs
+
   const handleProductChange = (event, index) => {
     const { name, value } = event.target;
     const updatedProducts = products.map((product, i) => {
@@ -198,12 +228,19 @@ const Invoices = () => {
       return product;
     });
     setProducts(updatedProducts);
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      products: updatedProducts,
+    }));
   };
 
   const removeProduct = (index) => {
-    setProducts((currentProducts) =>
-      currentProducts.filter((_, i) => i !== index)
-    );
+    const updatedProducts = products.filter((_, i) => i !== index);
+    setProducts(updatedProducts);
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      products: updatedProducts,
+    }));
   };
 
   const handleProductSelect = (newValue, actionMeta, index) => {
@@ -229,6 +266,10 @@ const Invoices = () => {
     });
 
     setProducts(updatedProducts);
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      products: updatedProducts,
+    }));
   };
 
   const handleTypeChange = (value, index) => {
@@ -239,6 +280,10 @@ const Invoices = () => {
       return product;
     });
     setProducts(updatedProducts);
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      products: updatedProducts,
+    }));
   };
 
   const handleFpaChange = (value, index) => {
@@ -252,6 +297,10 @@ const Invoices = () => {
       return product;
     });
     setProducts(updatedProducts);
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      products: updatedProducts,
+    }));
   };
 
   const productOptions = productsList.map((product) => ({
@@ -262,6 +311,22 @@ const Invoices = () => {
   const customStyles = {
     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
     menu: (provided) => ({ ...provided, zIndex: "9999 !important" }),
+  };
+
+  const createInvoice = () => {
+    PdfService.createInvoice(invoiceData, id)
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'invoice.pdf'); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -628,7 +693,7 @@ const Invoices = () => {
                         </tbody>
                       </Table>
                     </div>
-                    <Button className="btn_success">
+                    <Button className="btn_success" onClick={createInvoice}>
                       <i className="feather icon-save" />
                       Έκδοση
                       {loading && (

@@ -24,24 +24,17 @@ const PdfEditTemplate = () => {
   const [imageSrc, setImageSrc] = useState('');
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const id = useSelector(state => state.auth.user.user.id); // Adjust according to your Redux state structure
-  const user = useSelector(state => state.auth.user); // Adjust according to your Redux state structure
+  const id = useSelector(state => state.auth.user.user.id);
+  const user = useSelector(state => state.auth.user);
   const [userData, setUserData] = useState([]);
   const [invoice, setInvoice] = useState({
     invoice_nr: 123,
     subtotal: 100,
     paid: 50,
     items: [
-      { item: "DELL", description: "A sample item", quantity: 1, amount: 50 },
-      { item: "Lenovo", description: "Another sample item", quantity: 2, amount: 250 }
-    ],
-    shipping: {
-      name: "John Doe",
-      address: "123 Main Street",
-      city: "New York",
-      state: "NY",
-      country: "USA",
-    }
+      { item: "test", description: "test", quantity: 1, amount: "test" },
+      { item: "test", description: "test", quantity: 2, amount: "test" }
+    ]
   });
 
   const fetchImage = async () => {
@@ -49,14 +42,13 @@ const PdfEditTemplate = () => {
       const response = await axios.get(`${MIDDLEWARE_ULR}/pdf/image/${id}`, {
         responseType: 'blob',
         headers: {
-          'Authorization': `Bearer ${user.token}` // Ensure token is correctly fetched
+          'Authorization': `Bearer ${user.token}`
         }
       });
 
       const imageBlob = response.data;
       const imageObjectUrl = URL.createObjectURL(imageBlob);
       setImageSrc(imageObjectUrl);
-      console.log(imageSrc);
     } catch (error) {
       console.error('Failed to fetch image:', error);
     }
@@ -136,28 +128,27 @@ const PdfEditTemplate = () => {
 
   const handleSubmit = async () => {
     const data = new FormData();
-    data.append('textSize', formData.textSize);
-    data.append('logoSize', formData.logoSize);
+    data.append('textSize', formData.textSize*72/96);
+    data.append('logoSize', formData.logoSize*72/96);
     data.append('notes', formData.notes);
     data.append('firstColor', formData.colors[0]);
     data.append('secondColor', formData.colors[1]); 
-    console.log(formData.notes);
+   
     if (formData.logoImage) {
-      data.append('logoImage', formData.logoImage, formData.logoImage.name);
+      data.append('logoImage', formData.logoImage);
     }
 
     try {
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${user.token}` // Ensure token is correctly fetched
+          'Authorization': `Bearer ${user.token}`
         }
       };
       const url = `${MIDDLEWARE_ULR}/pdf/${id}`;
       const method = editData ? 'put' : 'post';
       const response = await axios[method](url, data, config);
 
-      console.log(response);
       if (response.status === 200 || response.status === 201) {
         setResultOpen(true);
         setStatus(response.status);
@@ -269,7 +260,7 @@ const PdfEditTemplate = () => {
                     {formData.logoImageUrl && (
                       <img src={formData.logoImageUrl} alt="Logo" style={{ width: `${formData.logoSize}rem`, height: `${formData.logoSize}rem` }} />
                     )}
-                    {imageSrc && <img src={imageSrc} alt="Uploaded Logo" style={{ width: `${formData.logoSize}rem`, height: `${formData.logoSize}rem` }} />}
+                    {(imageSrc && !formData.logoImageUrl) ? (<img src={imageSrc} alt="Uploaded Logo" style={{ width: `${formData.logoSize}rem`, height: `${formData.logoSize}rem` }} />):null}
                   </Col>
                   <Col xl={6} xxl={6}>
                     <div style={{ textAlign: "right", color: formData.colors[0] }}>
@@ -288,10 +279,10 @@ const PdfEditTemplate = () => {
                 </Row>
                 <Row className="title-type">
                   <Col xl={9} xxl={9}>
-                    <h4 style={{ color: formData.colors[0], fontWeight: 'bold' }}>Τιμολόγιο</h4>
+                    <h4 style={{ color: formData.colors[0], fontWeight: 'bold' }}>Τύπος παραστατικού</h4>
                   </Col>
                   <Col xl={3} xxl={3}>
-                    <span className="invoice-date">10/06/2024</span>
+                    <span className="invoice-date">dd/mm/yyyy</span>
                   </Col>
                 </Row>
                 <div className="customer-data">
@@ -337,10 +328,10 @@ const PdfEditTemplate = () => {
                         <tr className="data" style={{ color: formData.colors[1] }} key={index}>
                           <td>{item.item}</td>
                           <td>{item.quantity}</td>
-                          <td>τεμ.</td>
-                          <td>{item.amount}€</td>
-                          <td>24%</td>
-                          <td>{item.amount}€</td>
+                          <td>test</td>
+                          <td>{item.amount}</td>
+                          <td>test</td>
+                          <td>{item.amount}</td>
                         </tr>
                       ))}
                       <tr className="total">
@@ -349,7 +340,7 @@ const PdfEditTemplate = () => {
                         <td></td>
                         <td>Καθαρή αξία:</td>
                         <td></td>
-                        <td>200</td>
+                        <td>test</td>
                       </tr>
                       <tr className="total">
                         <td></td>
@@ -357,7 +348,7 @@ const PdfEditTemplate = () => {
                         <td></td>
                         <td>Έκπτωση:</td>
                         <td></td>
-                        <td>200</td>
+                        <td>test</td>
                       </tr>
                       <tr className="total">
                         <td></td>
@@ -365,7 +356,7 @@ const PdfEditTemplate = () => {
                         <td></td>
                         <td>Σύνολο ΦΠΑ:</td>
                         <td></td>
-                        <td>200</td>
+                        <td>test</td>
                       </tr>
                       <tr className="total">
                         <td></td>
@@ -373,7 +364,7 @@ const PdfEditTemplate = () => {
                         <td></td>
                         <td style={{ color: '#000000' }}>Σύνολο:</td>
                         <td></td>
-                        <td style={{ color: '#000000' }}>200</td>
+                        <td style={{ color: '#000000' }}>test</td>
                       </tr>
                     </tbody>
                   </table>

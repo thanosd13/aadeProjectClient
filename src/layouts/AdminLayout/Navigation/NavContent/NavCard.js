@@ -13,7 +13,7 @@ const NavCard = () => {
         <Card className="pro-card">
           <Card.Body className="p-2 text-center">
             <img src={sidebarImages} className="img-radius " alt="User-Profile" />
-            <h5 className="text-white">Datta Able Pro</h5>
+            <h5 className="text-white">Timologio365</h5>
             <p className="text-white">Checkout Datta Premium Features</p>
             <a
               href="https://codedthemes.com/item/datta-able-react-admin-template/?utm_source=free_demo&utm_medium=codedthemes&utm_campaign=button_download_premium"
