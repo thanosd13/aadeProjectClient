@@ -78,3 +78,7 @@
 .header-products {
   padding-top: 7rem !important;
 }
+
+.menu-actions:hover {
+  cursor: pointer;
+}

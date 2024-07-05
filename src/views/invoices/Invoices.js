@@ -16,6 +16,8 @@ import { CSSTransition } from "react-transition-group";
 import Spinner from "react-bootstrap/Spinner";
 import CreatableSelect from "react-select/creatable";
 import PriceDropDownMenu from "../../components/Generic/PriceDropDownMenu";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 import "./Invoices.css";
 import {
   faBan,
@@ -46,6 +48,7 @@ const Invoices = () => {
   const [date, setDate] = useState(getTodayDate());
   const [loading, setLoading] = useState(false);
   const [customers, setCustomers] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const id = useSelector((state) => state.auth.user.user.id);
 
   const [customerData, setCustomerData] = useState({
@@ -74,6 +77,11 @@ const Invoices = () => {
     },
     only_view: false,
   });
+
+  const invoiceTypes = {
+    1: "Τιμολόγιο πώλησης",
+    2: "Απόδειξη",
+  };
 
   const [shouldGeneratePdf, setShouldGeneratePdf] = useState(false);
 
@@ -236,6 +244,18 @@ const Invoices = () => {
       setShouldGeneratePdf(false); // Reset the flag
     }
   }, [shouldGeneratePdf]);
+
+  useEffect(() => {
+    PdfService.getInvoices(id)
+      .then((response) => {
+        if (response.status === 200) {
+          setInvoices(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const addProduct = () => {
     const newProduct = {
@@ -434,14 +454,34 @@ const Invoices = () => {
               </tr>
             </thead>
             <tbody>
-              {/* <tr key={index}>
-                    <th scope="row">{index+1}</th>
-                    <td>{customer.name}</td>
-                    <td>{customer.afm}</td>
-                    <td>{customer.doy}</td>
-                    <td>
-                    </td>
-                  </tr> */}
+              {invoices.map((invoice, index) => (
+                <tr key={index}>
+                  <td>{invoice.cutsomer_name}</td>
+                  <td>{invoice.published_date}</td>
+                  <td>{invoice.afm}</td>
+                  <td>{invoiceTypes[invoice.invoice_type]}</td>
+                  <td>{invoice.price}</td>
+                  <td>{invoice.fpa}</td>
+                  <td>{invoice.total_price}</td>
+                  <td>-</td>
+                  <td className="menu-actions">
+                    <DropdownButton id="dropdown-item-button" title="Ενέργειες">
+                      <Dropdown.Item as="button">
+                        <i className="feather icon-printer icon" />
+                        Εκτύπωση
+                      </Dropdown.Item>
+                      <Dropdown.Item as="button">
+                        <i className="feather icon-save icon" />
+                        Aποθήκευση
+                      </Dropdown.Item>
+                      <Dropdown.Item as="button">
+                        <i className="feather icon-x icon" />
+                        Ακύρωση
+                      </Dropdown.Item>
+                    </DropdownButton>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </Table>
         </Card.Body>
