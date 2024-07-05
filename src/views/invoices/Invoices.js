@@ -27,6 +27,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProductService from "../../services/ProductService";
 import FpaDropDownMenu from "../../components/Generic/FpaDropDownMenu";
 import PdfService from "../../services/PdfService";
+import { setIn } from "immutable";
 
 const Invoices = () => {
   const getTodayDate = () => {
@@ -65,7 +66,16 @@ const Invoices = () => {
   const [invoiceData, setInvoiceData] = useState({
     customerData: {},
     products: [],
+    informations: {
+      payment_way: "",
+      invoice_type: "",
+      notes: "",
+      my_data: false,
+    },
+    only_view: false,
   });
+
+  const [shouldGeneratePdf, setShouldGeneratePdf] = useState(false);
 
   const menuPortalTarget = document.body;
 
@@ -107,6 +117,27 @@ const Invoices = () => {
     setInvoiceData((prevInvoiceData) => ({
       ...prevInvoiceData,
       customerData: updatedCustomerData,
+    }));
+  };
+
+  const handleInformationsChange = (event) => {
+    const { name, value } = event.target;
+    const updatedInformations = { ...invoiceData.informations, [name]: value };
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      informations: updatedInformations,
+    }));
+  };
+
+  const handleMyDataChange = (event) => {
+    const { checked } = event.target;
+    const updatedInformations = {
+      ...invoiceData.informations,
+      my_data: checked,
+    };
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      informations: updatedInformations,
     }));
   };
 
@@ -194,6 +225,17 @@ const Invoices = () => {
       products,
     }));
   }, [customerData, products]);
+
+  useEffect(() => {
+    if (shouldGeneratePdf) {
+      if (invoiceData.only_view) {
+        generateInvoicePreview();
+      } else {
+        generateInvoice();
+      }
+      setShouldGeneratePdf(false); // Reset the flag
+    }
+  }, [shouldGeneratePdf]);
 
   const addProduct = () => {
     const newProduct = {
@@ -315,7 +357,7 @@ const Invoices = () => {
     menu: (provided) => ({ ...provided, zIndex: "9999 !important" }),
   };
 
-  const createInvoice = () => {
+  const generateInvoice = () => {
     PdfService.createInvoice(invoiceData, id)
       .then((response) => {
         const url = window.URL.createObjectURL(
@@ -333,7 +375,7 @@ const Invoices = () => {
       });
   };
 
-  const previewInvoice = () => {
+  const generateInvoicePreview = () => {
     PdfService.createInvoice(invoiceData, id)
       .then((response) => {
         const url = window.URL.createObjectURL(
@@ -348,6 +390,22 @@ const Invoices = () => {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const createInvoice = () => {
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      only_view: false,
+    }));
+    setShouldGeneratePdf(true);
+  };
+
+  const previewInvoice = () => {
+    setInvoiceData((prevInvoiceData) => ({
+      ...prevInvoiceData,
+      only_view: true,
+    }));
+    setShouldGeneratePdf(true);
   };
 
   return (
@@ -399,6 +457,77 @@ const Invoices = () => {
             <Col xl={12} xxl={12}>
               <Card style={{ padding: "0.4rem" }}>
                 <Card.Body>
+                  <h4 className="header-category">
+                    <i className="feather icon-info icon" />
+                    Πληροφορίες παραστατικού
+                  </h4>
+                  <div className="invoice-info">
+                    <Row gy={4}>
+                      <Form.Group
+                        as={Col}
+                        className="mb-3"
+                        controlId="exampleForm.ControlTextarea1"
+                      >
+                        <Form.Label>Τρόπος πληρωμής</Form.Label>
+                        <Form.Select
+                          value={invoiceData.informations.payment_way}
+                          name="payment_way"
+                          onChange={handleInformationsChange}
+                        >
+                          <option>Επιλέξτε</option>
+                          <option value="1">Μετρητά</option>
+                          <option value="2">Web banking</option>
+                          <option value="3">Pos/e-Pos</option>
+                          <option value="4">Επιταγή</option>
+                        </Form.Select>
+                      </Form.Group>
+                      <Form.Group
+                        as={Col}
+                        className="mb-3"
+                        controlId="exampleForm.ControlTextarea1"
+                      >
+                        <Form.Label>Τύπος παραστατικού</Form.Label>
+                        <Form.Select
+                          value={invoiceData.informations.invoice_type}
+                          name="invoice_type"
+                          onChange={handleInformationsChange}
+                        >
+                          <option>Επιλέξτε</option>
+                          <option value="1">Τιμολόγιο πώλησης</option>
+                          <option value="2">Απόδειξη</option>
+                        </Form.Select>
+                      </Form.Group>
+                      <Form.Group
+                        as={Col}
+                        className="mb-3"
+                        controlId="exampleForm.ControlTextarea1"
+                      >
+                        <Form.Label>Παρατηρήσεις</Form.Label>
+                        <Form.Control
+                          value={invoiceData.informations.notes}
+                          name="notes"
+                          onChange={handleInformationsChange}
+                          as="textarea"
+                          rows={1}
+                        />
+                      </Form.Group>
+                      <Form.Group
+                        as={Col}
+                        className="mb-3"
+                        controlId="exampleForm.ControlTextarea1"
+                      >
+                        <Form.Label>myData</Form.Label>
+                        <Form.Check
+                          value={invoiceData.informations.my_data}
+                          checked={invoiceData.informations.my_data}
+                          name="my_data"
+                          onChange={handleMyDataChange}
+                          type="switch"
+                          id="custom-switch"
+                        />
+                      </Form.Group>
+                    </Row>
+                  </div>
                   <h4 className="header-category">
                     <i className="feather icon-user icon" />
                     Πελάτης
@@ -619,7 +748,7 @@ const Invoices = () => {
                         />
                       </Form.Group>
                     </Row>
-                    <h4 className="header-category">
+                    <h4 className="header-category header-products">
                       <i className="feather icon-shopping-cart icon" />
                       Προϊόντα
                     </h4>

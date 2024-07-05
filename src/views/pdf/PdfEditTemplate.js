@@ -16,16 +16,16 @@ const PdfEditTemplate = () => {
     colors: ["#000000", "#444444"],
     logoImage: null,
     logoImageUrl: null,
-    notes: ""
+    notes: "",
   });
   const [editData, setEditData] = useState(false);
   const [resultOpen, setResultOpen] = useState(false);
   const [status, setStatus] = useState(null);
-  const [imageSrc, setImageSrc] = useState('');
+  const [imageSrc, setImageSrc] = useState("");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const id = useSelector(state => state.auth.user.user.id);
-  const user = useSelector(state => state.auth.user);
+  const id = useSelector((state) => state.auth.user.user.id);
+  const user = useSelector((state) => state.auth.user);
   const [userData, setUserData] = useState([]);
   const [invoice, setInvoice] = useState({
     invoice_nr: 123,
@@ -33,29 +33,32 @@ const PdfEditTemplate = () => {
     paid: 50,
     items: [
       { item: "test", description: "test", quantity: 1, amount: "test" },
-      { item: "test", description: "test", quantity: 2, amount: "test" }
-    ]
+      { item: "test", description: "test", quantity: 2, amount: "test" },
+    ],
   });
 
   const fetchImage = async () => {
     try {
       const response = await axios.get(`${MIDDLEWARE_ULR}/pdf/image/${id}`, {
-        responseType: 'blob',
+        responseType: "blob",
         headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
+          Authorization: `Bearer ${user.token}`,
+        },
       });
 
       const imageBlob = response.data;
       const imageObjectUrl = URL.createObjectURL(imageBlob);
       setImageSrc(imageObjectUrl);
     } catch (error) {
-      console.error('Failed to fetch image:', error);
+      console.error("Failed to fetch image:", error);
     }
   };
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--text-size', `${formData.textSize}px`);
+    document.documentElement.style.setProperty(
+      "--text-size",
+      `${formData.textSize}px`
+    );
   }, [formData.textSize]);
 
   useEffect(() => {
@@ -67,7 +70,7 @@ const PdfEditTemplate = () => {
           setEditData(true);
         }
       } catch (error) {
-        console.error('Failed to fetch user data:', error);
+        console.error("Failed to fetch user data:", error);
         setUserData([]);
       }
     };
@@ -78,17 +81,17 @@ const PdfEditTemplate = () => {
         if (response.status === 200) {
           setFormData(response.data);
           setEditData(true);
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             colors: [response.data.firstColor, response.data.secondColor],
-            textSize: response.data.textSize * 4 / 3,
-            logoSize: response.data.logoSize * 4 / 3
+            textSize: (response.data.textSize * 4) / 3,
+            logoSize: (response.data.logoSize * 4) / 3,
           }));
           fetchImage(); // Fetch the image
         }
       } catch (error) {
         setEditData(false);
-        console.error('Failed to fetch PDF data:', error);
+        console.error("Failed to fetch PDF data:", error);
       }
     };
 
@@ -97,17 +100,17 @@ const PdfEditTemplate = () => {
   }, [id]);
 
   const handleColorChange = (color, index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      colors: prev.colors.map((c, idx) => idx === index ? color.hex : c)
+      colors: prev.colors.map((c, idx) => (idx === index ? color.hex : c)),
     }));
   };
 
   const handleSettingChange = (event) => {
     const { name, value } = event.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -116,10 +119,10 @@ const PdfEditTemplate = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           logoImage: file,
-          logoImageUrl: reader.result
+          logoImageUrl: reader.result,
         }));
       };
       reader.readAsDataURL(file);
@@ -128,25 +131,25 @@ const PdfEditTemplate = () => {
 
   const handleSubmit = async () => {
     const data = new FormData();
-    data.append('textSize', formData.textSize*72/96);
-    data.append('logoSize', formData.logoSize);
-    data.append('notes', formData.notes);
-    data.append('firstColor', formData.colors[0]);
-    data.append('secondColor', formData.colors[1]); 
-   
+    data.append("textSize", (formData.textSize * 72) / 96);
+    data.append("logoSize", formData.logoSize);
+    data.append("notes", formData.notes);
+    data.append("firstColor", formData.colors[0]);
+    data.append("secondColor", formData.colors[1]);
+
     if (formData.logoImage) {
-      data.append('logoImage', formData.logoImage);
+      data.append("logoImage", formData.logoImage);
     }
 
     try {
       const config = {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${user.token}`
-        }
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${user.token}`,
+        },
       };
       const url = `${MIDDLEWARE_ULR}/pdf/${id}`;
-      const method = editData ? 'put' : 'post';
+      const method = editData ? "put" : "post";
       const response = await axios[method](url, data, config);
 
       if (response.status === 200 || response.status === 201) {
@@ -157,7 +160,7 @@ const PdfEditTemplate = () => {
         fetchImage(); // Fetch the updated image
       }
     } catch (error) {
-      console.error('Error uploading the image', error);
+      console.error("Error uploading the image", error);
       setStatus(error.response?.status);
       setTitle("Σφάλμα");
       setBody("Ανεπιτυχής αποθήκευση");
@@ -166,7 +169,7 @@ const PdfEditTemplate = () => {
 
   const handleClose = () => {
     setResultOpen(false);
-  }
+  };
 
   return (
     <React.Fragment>
@@ -175,7 +178,10 @@ const PdfEditTemplate = () => {
           <Card>
             <Card.Body className="header-template">
               <h3>Επεξεργασία παραστατικού</h3>
-              <p>(Το Timologio365 σας δίνει τη δυνατότητα να προσαρμόσετε το template του παραστατικού σας όπως εσείς επιθυμείτε.)</p>
+              <p>
+                (Το Timologio365 σας δίνει τη δυνατότητα να προσαρμόσετε το
+                template του παραστατικού σας όπως εσείς επιθυμείτε.)
+              </p>
             </Card.Body>
           </Card>
         </Col>
@@ -236,13 +242,26 @@ const PdfEditTemplate = () => {
                   />
                 </Row>
                 <Row>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
                     <Form.Label>Παρατηρήσεις</Form.Label>
-                    <Form.Control name="notes" value={formData.notes} onChange={handleSettingChange} as="textarea" rows={3} />
+                    <Form.Control
+                      name="notes"
+                      value={formData.notes}
+                      onChange={handleSettingChange}
+                      as="textarea"
+                      rows={3}
+                    />
                   </Form.Group>
                 </Row>
                 <Row className="btn_save">
-                  <Button onClick={handleSubmit} variant="success" className='btn_success'>
+                  <Button
+                    onClick={handleSubmit}
+                    variant="success"
+                    className="btn_success"
+                  >
                     <i className="feather icon-save" />
                     Αποθήκευση αλλαγών
                   </Button>
@@ -255,23 +274,57 @@ const PdfEditTemplate = () => {
           <Card style={{ padding: "0.4rem", height: "72rem" }}>
             <Card.Body>
               <div>
-                <Row className="template-header" style={{ alignItems: "center" }}>
+                <Row
+                  className="template-header"
+                  style={{ alignItems: "center" }}
+                >
                   <Col xl={6} xxl={6}>
                     {formData.logoImageUrl && (
-                      <img src={formData.logoImageUrl} alt="Logo" style={{ width: `${formData.logoSize}rem`, height: `${formData.logoSize}rem` }} />
+                      <img
+                        src={formData.logoImageUrl}
+                        alt="Logo"
+                        style={{
+                          width: `${formData.logoSize}rem`,
+                          height: `${formData.logoSize}rem`,
+                        }}
+                      />
                     )}
-                    {(imageSrc && !formData.logoImageUrl) ? (<img src={imageSrc} alt="Uploaded Logo" style={{ width: `${formData.logoSize}rem`, height: `${formData.logoSize}rem` }} />):null}
+                    {imageSrc && !formData.logoImageUrl ? (
+                      <img
+                        src={imageSrc}
+                        alt="Uploaded Logo"
+                        style={{
+                          width: `${formData.logoSize}rem`,
+                          height: `${formData.logoSize}rem`,
+                        }}
+                      />
+                    ) : null}
                   </Col>
                   <Col xl={6} xxl={6}>
-                    <div style={{ textAlign: "right", color: formData.colors[0] }}>
+                    <div
+                      style={{ textAlign: "right", color: formData.colors[0] }}
+                    >
                       {userData.length > 0 && (
                         <>
-                          <h1 style={{ margin: 0, fontSize: `${formData.textSize}px`, color: formData.colors[0] }}>
+                          <h1
+                            style={{
+                              margin: 0,
+                              fontSize: `${formData.textSize}px`,
+                              color: formData.colors[0],
+                            }}
+                          >
                             {userData[0].name}
                           </h1>
-                          <div>{userData[0].address} {userData[0].street_number}</div>
-                          <div>ΑΦΜ: {userData[0].afm}, ΔΟΥ: {userData[0].doy}</div>
-                          <div>ΤΗΛ: {userData[0].tel_number}, E-MAIL: {userData[0].email}</div>
+                          <div>
+                            {userData[0].address} {userData[0].street_number}
+                          </div>
+                          <div>
+                            ΑΦΜ: {userData[0].afm}, ΔΟΥ: {userData[0].doy}
+                          </div>
+                          <div>
+                            ΤΗΛ: {userData[0].tel_number}, E-MAIL:{" "}
+                            {userData[0].email}
+                          </div>
                         </>
                       )}
                     </div>
@@ -279,7 +332,11 @@ const PdfEditTemplate = () => {
                 </Row>
                 <Row className="title-type">
                   <Col xl={9} xxl={9}>
-                    <h4 style={{ color: formData.colors[0], fontWeight: 'bold' }}>Τύπος παραστατικού</h4>
+                    <h4
+                      style={{ color: formData.colors[0], fontWeight: "bold" }}
+                    >
+                      Τύπος παραστατικού
+                    </h4>
                   </Col>
                   <Col xl={3} xxl={3}>
                     <span className="invoice-date">dd/mm/yyyy</span>
@@ -288,7 +345,9 @@ const PdfEditTemplate = () => {
                 <div className="customer-data">
                   <Row>
                     <Col xl={6} xxl={6}>
-                      <span style={{ color: formData.colors[1] }}>Επωνυμία:</span>
+                      <span style={{ color: formData.colors[1] }}>
+                        Επωνυμία:
+                      </span>
                     </Col>
                     <Col xl={6} xxl={6}>
                       <span style={{ color: formData.colors[1] }}>Χώρα:</span>
@@ -304,10 +363,14 @@ const PdfEditTemplate = () => {
                   </Row>
                   <Row className="title-type">
                     <Col xl={6} xxl={6}>
-                      <span style={{ color: formData.colors[1] }}>Επάγγελμα:</span>
+                      <span style={{ color: formData.colors[1] }}>
+                        Επάγγελμα:
+                      </span>
                     </Col>
                     <Col xl={6} xxl={6}>
-                      <span style={{ color: formData.colors[1] }}>Διεύθυνση:</span>
+                      <span style={{ color: formData.colors[1] }}>
+                        Διεύθυνση:
+                      </span>
                     </Col>
                   </Row>
                 </div>
@@ -318,14 +381,22 @@ const PdfEditTemplate = () => {
                         <th style={{ color: formData.colors[0] }}>Προϊόν</th>
                         <th style={{ color: formData.colors[0] }}>Ποσότητα</th>
                         <th style={{ color: formData.colors[0] }}>Μ.Μ</th>
-                        <th style={{ color: formData.colors[0] }}>Τιμή προ ΦΠΑ</th>
+                        <th style={{ color: formData.colors[0] }}>
+                          Τιμή προ ΦΠΑ
+                        </th>
                         <th style={{ color: formData.colors[0] }}>ΦΠΑ</th>
-                        <th style={{ color: formData.colors[0] }}>Τελική τιμή</th>
+                        <th style={{ color: formData.colors[0] }}>
+                          Τελική τιμή
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {invoice.items.map((item, index) => (
-                        <tr className="data" style={{ color: formData.colors[1] }} key={index}>
+                        <tr
+                          className="data"
+                          style={{ color: formData.colors[1] }}
+                          key={index}
+                        >
                           <td>{item.item}</td>
                           <td>{item.quantity}</td>
                           <td>test</td>
@@ -362,19 +433,47 @@ const PdfEditTemplate = () => {
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td style={{ color: '#000000' }}>Σύνολο:</td>
+                        <td style={{ color: "#000000" }}>Σύνολο:</td>
                         <td></td>
-                        <td style={{ color: '#000000' }}>test</td>
+                        <td style={{ color: "#000000" }}>test</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
+              <div className="footer-informations">
+                <Row>
+                  <Col xl={9} xxl={9}>
+                    <Form.Group
+                      as={Col}
+                      className="mb-3"
+                      controlId="exampleForm.ControlTextarea1"
+                    >
+                      <Form.Control
+                        className="footer-notes"
+                        as="textarea"
+                        placeholder="Παρατηρήσεις"
+                        value={formData.notes}
+                        rows={5}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col xl={3} xxl={3}>
+                    <span style={{ color: formData.colors[1] }}>barcode</span>
+                  </Col>
+                </Row>
+              </div>
             </Card.Body>
           </Card>
         </Col>
       </Row>
-      <ResultModal show={resultOpen} status={status} title={title} body={body} onHide={handleClose} />
+      <ResultModal
+        show={resultOpen}
+        status={status}
+        title={title}
+        body={body}
+        onHide={handleClose}
+      />
     </React.Fragment>
   );
 };

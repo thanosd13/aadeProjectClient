@@ -120,6 +120,14 @@
     justify-content: center;
 
   }
+  
+  .footer-informations {
+    padding-top: 8rem !important;
+  }
+
+  .footer-notes {
+    width: 60%;
+  }
 
   .btn_save button {
     width: 50%;
