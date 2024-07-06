@@ -36,6 +36,16 @@ class PdfService {
       headers: AuthHeader(),
     });
   }
+
+  getDocument(userId, documentId) {
+    return axios.get(
+      MIDDLEWARE_ULR + "/pdf/document/" + userId + "/" + documentId,
+      {
+        headers: AuthHeader(),
+        responseType: "blob",
+      }
+    );
+  }
 }
 
 export default new PdfService();

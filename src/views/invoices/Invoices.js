@@ -377,18 +377,33 @@ const Invoices = () => {
     menu: (provided) => ({ ...provided, zIndex: "9999 !important" }),
   };
 
+  function saveDocument(response) {
+    const url = window.URL.createObjectURL(
+      new Blob([response.data], { type: "application/pdf" })
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "invoice.pdf");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function previewDocument(response) {
+    const url = window.URL.createObjectURL(
+      new Blob([response.data], { type: "application/pdf" })
+    );
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = url;
+    document.body.appendChild(iframe);
+    iframe.contentWindow.print();
+  }
+
   const generateInvoice = () => {
     PdfService.createInvoice(invoiceData, id)
       .then((response) => {
-        const url = window.URL.createObjectURL(
-          new Blob([response.data], { type: "application/pdf" })
-        );
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "invoice.pdf"); //or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        saveDocument(response);
       })
       .catch((error) => {
         console.log(error);
@@ -398,14 +413,27 @@ const Invoices = () => {
   const generateInvoicePreview = () => {
     PdfService.createInvoice(invoiceData, id)
       .then((response) => {
-        const url = window.URL.createObjectURL(
-          new Blob([response.data], { type: "application/pdf" })
-        );
-        const iframe = document.createElement("iframe");
-        iframe.style.display = "none";
-        iframe.src = url;
-        document.body.appendChild(iframe);
-        iframe.contentWindow.print();
+        previewDocument(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const getDocument = (userId, idDocument) => {
+    PdfService.getDocument(userId, idDocument)
+      .then((response) => {
+        saveDocument(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const printDocument = (userId, idDocument) => {
+    PdfService.getDocument(userId, idDocument)
+      .then((response) => {
+        previewDocument(response);
       })
       .catch((error) => {
         console.log(error);
@@ -466,16 +494,30 @@ const Invoices = () => {
                   <td>-</td>
                   <td className="menu-actions">
                     <DropdownButton id="dropdown-item-button" title="Ενέργειες">
-                      <Dropdown.Item as="button">
+                      <Dropdown.Item
+                        onClick={() => printDocument(id, invoice.id)}
+                        as="button"
+                      >
                         <i className="feather icon-printer icon" />
                         Εκτύπωση
                       </Dropdown.Item>
-                      <Dropdown.Item as="button">
+                      <Dropdown.Item
+                        onClick={() => getDocument(id, invoice.id)}
+                        as="button"
+                      >
                         <i className="feather icon-save icon" />
                         Aποθήκευση
                       </Dropdown.Item>
                       <Dropdown.Item as="button">
-                        <i className="feather icon-x icon" />
+                        <i className="feather icon-copy icon" />
+                        Αντιγραφή
+                      </Dropdown.Item>
+                      <Dropdown.Item as="button">
+                        <i className="feather icon-mail icon" />
+                        Αποστολή
+                      </Dropdown.Item>
+                      <Dropdown.Item as="button">
+                        <i className="feather icon-x-square icon" />
                         Ακύρωση
                       </Dropdown.Item>
                     </DropdownButton>

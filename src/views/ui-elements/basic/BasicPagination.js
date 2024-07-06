@@ -1,8 +1,8 @@
-import React from 'react';
-import { Row, Col, Pagination } from 'react-bootstrap';
-import ModuleNotification from '../../../components/Widgets/Statistic/Notification';
+import React from "react";
+import { Row, Col, Pagination } from "react-bootstrap";
+import ModuleNotification from "../../../components/Widgets/Statistic/Notification";
 
-import Card from '../../../components/Card/MainCard';
+import Card from "../../../components/Card/MainCard";
 
 const BasicBreadcrumbPagination = () => {
   let active = 3;

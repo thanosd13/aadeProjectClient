@@ -1,30 +1,31 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import CustomerService from "../../services/CustomerService";
 import { useSelector } from "react-redux";
 import "./Modal.css";
 import ResultModal from "./ResultModal";
+import ProductService from "../../services/ProductService";
 
-const DeleteCustomerModal = (props) => {
+const DeleteProductModal = (props) => {
   const [status, setStatus] = useState(null);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [resultOpen, setResultOpen] = useState(false);
+  const [hide, setHide] = useState(false);
   const userId = useSelector((state) => state.auth.user.user.id);
 
   const handleResultModalClose = () => {
     setResultOpen(false);
   };
 
-  const deleteCustomer = () => {
-    CustomerService.deleteCustomer(userId, props.deleteId)
+  const deleteProduct = () => {
+    ProductService.deleteProduct(userId, props.deleteId)
       .then((response) => {
         if (response.status === 204) {
           setResultOpen(true);
           setStatus(response.status);
           setTitle("Επιτυχής διαγραφή");
-          setBody("Ο χρήστης διαγράφηκε επιτυχώς!");
-          props.onCustomerAdded();
+          setBody("Το προϊόν διαγράφηκε επιτυχώς!");
+          props.onProductAdded();
           props.onHide();
         }
       })
@@ -32,7 +33,7 @@ const DeleteCustomerModal = (props) => {
         setResultOpen(true);
         setStatus(error.response.status);
         setTitle("Σφάλμα");
-        setBody("Κάποιο σφάλμα προέκυψε κατά τη διαγραφή του χρήστη!");
+        setBody("Κάποιο σφάλμα προέκυψε κατά τη διαγραφή του προϊόντος!");
         setHide(true);
         props.onHide();
       });
@@ -42,16 +43,16 @@ const DeleteCustomerModal = (props) => {
     <React.Fragment>
       <Modal show={props.show} onHide={props.onHide}>
         <Modal.Header closeButton>
-          <Modal.Title className="modal-title">Διαγραφή πελάτη</Modal.Title>
+          <Modal.Title className="modal-title">Διαγραφή προϊόντος</Modal.Title>
         </Modal.Header>
         <Modal.Body className="modal-body">
-          Είστε σίγουροι ότι θέλετε να διαγράψετε το συγκεκριμένο πελάτη;
+          Είστε σίγουροι ότι θέλετε να διαγράψετε το συγκεκριμένο προϊόν;
         </Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={props.onHide}>
             Όχι
           </Button>
-          <Button variant="primary" onClick={deleteCustomer}>
+          <Button variant="primary" onClick={deleteProduct}>
             Ναι
           </Button>
         </Modal.Footer>
@@ -67,4 +68,4 @@ const DeleteCustomerModal = (props) => {
   );
 };
 
-export default DeleteCustomerModal;
+export default DeleteProductModal;
