@@ -557,10 +557,17 @@ const Invoices = () => {
                           onChange={handleInformationsChange}
                         >
                           <option>Επιλέξτε</option>
-                          <option value="1">Μετρητά</option>
-                          <option value="2">Web banking</option>
-                          <option value="3">Pos/e-Pos</option>
+                          <option value="1">
+                            Επαγ. Λογαριασμός Πληρωμών Ημεδαπής
+                          </option>
+                          <option value="2">
+                            Επαγ. Λογαριασμός Πληρωμών Αλλοδαπής
+                          </option>
+                          <option value="3">Μετρητά</option>
                           <option value="4">Επιταγή</option>
+                          <option value="5">Επί Πιστώσει</option>
+                          <option value="6">Web Banking</option>
+                          <option value="7">POS / e-POS</option>
                         </Form.Select>
                       </Form.Group>
                       <Form.Group
@@ -575,8 +582,126 @@ const Invoices = () => {
                           onChange={handleInformationsChange}
                         >
                           <option>Επιλέξτε</option>
-                          <option value="1">Τιμολόγιο πώλησης</option>
-                          <option value="2">Απόδειξη</option>
+                          <option value="1.1">Τιμολόγιο Πώλησης</option>
+                          <option value="1.2">
+                            Τιμολόγιο Πώλησης / Ενδοκοινοτικές Παραδόσεις
+                          </option>
+                          <option value="1.3">
+                            Τιμολόγιο Πώλησης / Παραδόσεις Τρίτων Χωρών
+                          </option>
+                          <option value="1.4">
+                            Τιμολόγιο Πώλησης / Πώληση για Λογαριασμό Τρίτων
+                          </option>
+                          <option value="1.5">
+                            Τιμολόγιο Πώλησης / Εκκαθάριση Πωλήσεων Τρίτων -
+                            Αμοιβή από Πωλήσεις Τρίτων
+                          </option>
+                          <option value="1.6">
+                            Τιμολόγιο Πώλησης / Συμπληρωματικό Παραστατικό
+                          </option>
+                          <option value="2.1">Τιμολόγιο Παροχής</option>
+                          <option value="2.2">
+                            Τιμολόγιο Παροχής / Ενδοκοινοτική Παροχή Υπηρεσιών
+                          </option>
+                          <option value="2.3">
+                            Τιμολόγιο Παροχής / Παροχή Υπηρεσιών σε λήπτη Τρίτης
+                            Χώρας
+                          </option>
+                          <option value="2.4">
+                            Τιμολόγιο Παροχής / Συμπληρωματικό Παραστατικό
+                          </option>
+                          <option value="3.1">
+                            Τίτλος Κτήσης (μη υπόχρεος Εκδότης)
+                          </option>
+                          <option value="3.2">
+                            Τίτλος Κτήσης (άρνηση έκδοσης από υπόχρεο Εκδότη)
+                          </option>
+                          <option value="5.1">
+                            Πιστωτικό Τιμολόγιο / Συσχετιζόμενο
+                          </option>
+                          <option value="5.2">
+                            Πιστωτικό Τιμολόγιο / Μη Συσχετιζόμενο
+                          </option>
+                          <option value="6.1">Στοιχείο Αυτοπαράδοσης</option>
+                          <option value="6.2">
+                            Στοιχείο Ιδιοχρησιμοποίησης
+                          </option>
+                          <option value="7.1">Συμβόλαιο - Έσοδο</option>
+                          <option value="8.1">Ενοίκια - Έσοδο</option>
+                          <option value="8.2">
+                            Ειδικό Στοιχείο – Απόδειξης Είσπραξης Φόρου Διαμονής
+                          </option>
+                          <option value="8.4">Απόδειξη Είσπραξης POS</option>
+                          <option value="8.5">Απόδειξη Επιστροφής POS</option>
+                          <option value="8.6">
+                            Δελτίο Παραγγελίας Εστίασης
+                          </option>
+                          <option value="9.3">Δελτίο Αποστολής</option>
+                          <option value="11.1">ΑΛΠ</option>
+                          <option value="11.2">ΑΠΥ</option>
+                          <option value="11.3">Απλοποιημένο Τιμολόγιο</option>
+                          <option value="11.4">
+                            Πιστωτικό Στοιχ. Λιανικής
+                          </option>
+                          <option value="11.5">
+                            Απόδειξη Λιανικής Πώλησης για Λογ/σμό Τρίτων
+                          </option>
+                          <option value="13.1">
+                            Έξοδα - Αγορές Λιανικών Συναλλαγών ημεδαπής /
+                            αλλοδαπής
+                          </option>
+                          <option value="13.2">
+                            Παροχή Λιανικών Συναλλαγών ημεδαπής / αλλοδαπής
+                          </option>
+                          <option value="13.3">Κοινόχρηστα</option>
+                          <option value="13.4">Συνδρομές</option>
+                          <option value="13.30">
+                            Παραστατικά Οντότητας ως Αναγράφονται από την ίδια
+                            (Δυναμικό)
+                          </option>
+                          <option value="13.31">
+                            Πιστωτικό Στοιχ. Λιανικής ημεδαπής / αλλοδαπής
+                          </option>
+                          <option value="14.1">
+                            Τιμολόγιο / Ενδοκοινοτικές Αποκτήσεις
+                          </option>
+                          <option value="14.2">
+                            Τιμολόγιο / Αποκτήσεις Τρίτων Χωρών
+                          </option>
+                          <option value="14.3">
+                            Τιμολόγιο / Ενδοκοινοτική Λήψη Υπηρεσιών
+                          </option>
+                          <option value="14.4">
+                            Τιμολόγιο / Λήψη Υπηρεσιών Τρίτων Χωρών
+                          </option>
+                          <option value="14.5">
+                            ΕΦΚΑ και λοιποί Ασφαλιστικοί Οργανισμοί
+                          </option>
+                          <option value="14.30">
+                            Παραστατικά Οντότητας ως Αναγράφονται από την ίδια
+                            (Δυναμικό)
+                          </option>
+                          <option value="14.31">
+                            Πιστωτικό ημεδαπής / αλλοδαπής
+                          </option>
+                          <option value="15.1">Συμβόλαιο - Έξοδο</option>
+                          <option value="16.1">Ενοίκιο Έξοδο</option>
+                          <option value="17.1">Μισθοδοσία</option>
+                          <option value="17.2">Αποσβέσεις</option>
+                          <option value="17.3">
+                            Λοιπές Εγγραφές Τακτοποίησης Εσόδων - Λογιστική Βάση
+                          </option>
+                          <option value="17.4">
+                            Λοιπές Εγγραφές Τακτοποίησης Εσόδων - Φορολογική
+                            Βάση
+                          </option>
+                          <option value="17.5">
+                            Λοιπές Εγγραφές Τακτοποίησης Εξόδων - Λογιστική Βάση
+                          </option>
+                          <option value="17.6">
+                            Λοιπές Εγγραφές Τακτοποίησης Εξόδων - Φορολογική
+                            Βάση
+                          </option>
                         </Form.Select>
                       </Form.Group>
                       <Form.Group
