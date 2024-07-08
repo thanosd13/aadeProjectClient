@@ -29,7 +29,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProductService from "../../services/ProductService";
 import FpaDropDownMenu from "../../components/Generic/FpaDropDownMenu";
 import PdfService from "../../services/PdfService";
-import { setIn } from "immutable";
+import PaginationComponent from "../../components/Pagination/PaginationComponent";
 
 const Invoices = () => {
   const getTodayDate = () => {
@@ -49,6 +49,8 @@ const Invoices = () => {
   const [loading, setLoading] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [invoices, setInvoices] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(2);
   const id = useSelector((state) => state.auth.user.user.id);
 
   const [customerData, setCustomerData] = useState({
@@ -456,6 +458,16 @@ const Invoices = () => {
     setShouldGeneratePdf(true);
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = invoices.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(invoices.length / itemsPerPage);
+
   return (
     <React.Fragment>
       <Card>
@@ -482,7 +494,7 @@ const Invoices = () => {
               </tr>
             </thead>
             <tbody>
-              {invoices.map((invoice, index) => (
+              {currentItems.map((invoice, index) => (
                 <tr key={index}>
                   <td>{invoice.cutsomer_name}</td>
                   <td>{invoice.published_date}</td>
@@ -526,6 +538,13 @@ const Invoices = () => {
               ))}
             </tbody>
           </Table>
+          <div className="pagination-invoices">
+            <PaginationComponent
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </Card.Body>
       </Card>
       <CSSTransition

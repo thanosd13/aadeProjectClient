@@ -1,19 +1,13 @@
-import { useEffect, useState } from "react";
-import React from "react";
-import { Row, Col, Card, Table, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Card, Button, Table, Pagination } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import CustomerModal from "../../components/Modals/CustomerModal";
 import CustomerService from "../../services/CustomerService";
-import {
-  faBan,
-  faInfo,
-  faMagnifyingGlass,
-  faPenToSquare,
-  faPlus,
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBan, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DeleteCustomerModal from "../../components/Modals/DeleteCustomerModal";
+import PaginationComponent from "../../components/Pagination/PaginationComponent";
+import "./Customers.css";
 
 const Customers = () => {
   const [showModal, setShowModal] = useState(false);
@@ -22,6 +16,8 @@ const Customers = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(4);
   const id = useSelector((state) => state.auth.user.user.id);
 
   const handleOpenModal = (customer) => {
@@ -45,6 +41,7 @@ const Customers = () => {
     setDeleteId(id);
     setShowDelete(true);
   };
+
   const handleCloseDelete = () => {
     setShowDelete(false);
   };
@@ -69,6 +66,29 @@ const Customers = () => {
     handleCustomerAdded();
   }, []);
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = customers.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(customers.length / itemsPerPage);
+
+  let items = [];
+  for (let number = 1; number <= totalPages; number++) {
+    items.push(
+      <Pagination.Item
+        key={number}
+        active={number === currentPage}
+        onClick={() => handlePageChange(number)}
+      >
+        {number}
+      </Pagination.Item>
+    );
+  }
+
   return (
     <React.Fragment>
       <Card>
@@ -91,9 +111,9 @@ const Customers = () => {
               </tr>
             </thead>
             <tbody>
-              {customers.map((customer, index) => (
+              {currentItems.map((customer, index) => (
                 <tr key={index}>
-                  <th scope="row">{index + 1}</th>
+                  <th scope="row">{index + 1 + indexOfFirstItem}</th>
                   <td>{customer.name}</td>
                   <td>{customer.afm}</td>
                   <td>{customer.doy}</td>
@@ -117,6 +137,13 @@ const Customers = () => {
               ))}
             </tbody>
           </Table>
+          <div className="pagination-customers">
+            <PaginationComponent
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </Card.Body>
       </Card>
       <CustomerModal

@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Table, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { faBan, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
@@ -7,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProductModal from "../../components/Modals/ProductModal";
 import ProductService from "../../services/ProductService";
 import DeleteProductModal from "../../components/Modals/DeleteProductModal";
+import PaginationComponent from "../../components/Pagination/PaginationComponent";
+import "./Products.css";
 
 const Products = () => {
   const [showModal, setShowModal] = useState(false);
@@ -15,6 +16,8 @@ const Products = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(4);
   const id = useSelector((state) => state.auth.user.user.id);
 
   const handleOpenModal = (product) => {
@@ -36,6 +39,7 @@ const Products = () => {
     setDeleteId(id);
     setShowDelete(true);
   };
+
   const handleCloseDelete = () => {
     setShowDelete(false);
   };
@@ -65,6 +69,16 @@ const Products = () => {
     handleProductAdded();
   }, []);
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
   return (
     <React.Fragment>
       <Card>
@@ -89,9 +103,9 @@ const Products = () => {
               </tr>
             </thead>
             <tbody>
-              {products.map((product, index) => (
+              {currentItems.map((product, index) => (
                 <tr key={index}>
-                  <th scope="row">{index + 1}</th>
+                  <th scope="row">{index + 1 + indexOfFirstItem}</th>
                   <td>{product.name}</td>
                   <td>{product.price}</td>
                   <td>{product.type}</td>
@@ -117,6 +131,13 @@ const Products = () => {
               ))}
             </tbody>
           </Table>
+          <div className="pagination-products">
+            <PaginationComponent
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </Card.Body>
       </Card>
       <ProductModal
