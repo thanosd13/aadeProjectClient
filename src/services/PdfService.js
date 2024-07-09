@@ -37,6 +37,18 @@ class PdfService {
     });
   }
 
+  getSeries(id) {
+    return axios.get(MIDDLEWARE_ULR + "/pdf/series/" + id, {
+      headers: AuthHeader(),
+    });
+  }
+
+  getMaxSerialNumber(serie, id) {
+    return axios.post(MIDDLEWARE_ULR + "/pdf/getMaxSerialNumber/" + id, serie, {
+      headers: AuthHeader(),
+    });
+  }
+
   getDocument(userId, documentId) {
     return axios.get(
       MIDDLEWARE_ULR + "/pdf/document/" + userId + "/" + documentId,

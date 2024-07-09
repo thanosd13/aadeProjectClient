@@ -45,10 +45,12 @@ const Invoices = () => {
   const [productsList, setProductsList] = useState([]);
   const [error, setError] = useState("");
   const [today, setToday] = useState("");
+  const [serialNumDisabled, setSerialNumDisabled] = useState(false);
   const [date, setDate] = useState(getTodayDate());
   const [loading, setLoading] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [invoices, setInvoices] = useState([]);
+  const [series, setSeries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(2);
   const id = useSelector((state) => state.auth.user.user.id);
@@ -76,6 +78,8 @@ const Invoices = () => {
       invoice_type: "",
       notes: "",
       my_data: false,
+      invoice_serie: "",
+      serial_number: "",
     },
     only_view: false,
   });
@@ -257,6 +261,16 @@ const Invoices = () => {
       .catch((error) => {
         console.log(error);
       });
+
+    PdfService.getSeries(id)
+      .then((response) => {
+        if (response.status === 200) {
+          setSeries(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   const addProduct = () => {
@@ -374,6 +388,11 @@ const Invoices = () => {
     label: product.name,
   }));
 
+  const seriesOptions = series.map((serie) => ({
+    value: serie.invoice_serie,
+    label: serie.invoice_serie,
+  }));
+
   const customStyles = {
     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
     menu: (provided) => ({ ...provided, zIndex: "9999 !important" }),
@@ -467,6 +486,36 @@ const Invoices = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = invoices.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(invoices.length / itemsPerPage);
+
+  const handleSelectChange = async (newValue) => {
+    const value = newValue ? newValue.value : "";
+    try {
+      const response = await PdfService.getMaxSerialNumber(
+        { serie: value },
+        id
+      );
+      const maxSerialNumber = response.data.data
+        ? parseInt(response.data.data) + 1
+        : "";
+
+      if (maxSerialNumber) {
+        setSerialNumDisabled(true);
+      } else {
+        setSerialNumDisabled(false);
+      }
+
+      setInvoiceData((prevInvoiceData) => ({
+        ...prevInvoiceData,
+        informations: {
+          ...prevInvoiceData.informations,
+          invoice_serie: value,
+          serial_number: maxSerialNumber,
+        },
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -752,6 +801,37 @@ const Invoices = () => {
                           id="custom-switch"
                         />
                       </Form.Group>
+                    </Row>
+                    <Row gy={4}>
+                      <Col xl={3} xxl={3}>
+                        <Form.Label>Σειρά παραστατικού</Form.Label>
+                        <CreatableSelect
+                          isClearable
+                          options={seriesOptions}
+                          placeholder="Επιλέξτε ή πληκτρολογήστε"
+                          styles={customStyles}
+                          menuPortalTarget={menuPortalTarget}
+                          onChange={handleSelectChange}
+                        />
+                      </Col>
+                      <Col xl={3} xxl={3}>
+                        <Form.Group
+                          className="mb-3"
+                          as={Col}
+                          controlId="formGridPassword"
+                        >
+                          <Form.Label>ΑΑ παραστατικού</Form.Label>
+                          <Form.Control
+                            className="form-group-style"
+                            type="text"
+                            placeholder="ΑΑ"
+                            name="serial_number"
+                            disabled={serialNumDisabled}
+                            value={invoiceData.informations.serial_number}
+                            onChange={handleInformationsChange}
+                          />
+                        </Form.Group>
+                      </Col>
                     </Row>
                   </div>
                   <h4 className="header-category">
