@@ -43,6 +43,18 @@ class PdfService {
     });
   }
 
+  getMarks(id) {
+    return axios.get(MIDDLEWARE_ULR + "/pdf/getMarks/" + id, {
+      headers: AuthHeader(),
+    });
+  }
+
+  getCustomerByMark(mark) {
+    return axios.get(MIDDLEWARE_ULR + "/pdf/getCustomerByMark/" + mark, {
+      headers: AuthHeader(),
+    });
+  }
+
   getMaxSerialNumber(serie, id) {
     return axios.post(MIDDLEWARE_ULR + "/pdf/getMaxSerialNumber/" + id, serie, {
       headers: AuthHeader(),
