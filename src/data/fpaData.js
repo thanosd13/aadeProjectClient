@@ -1,4 +1,5 @@
 export const initialData = [
+  { value: "-", code: "8" },
   { value: "0", code: "7" },
   { value: "3", code: "9" },
   { value: "4", code: "6" },

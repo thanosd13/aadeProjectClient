@@ -1,34 +1,41 @@
 const menuItems = {
   items: [
     {
-      id: 'home_page',
-      title: 'Αρχική σελίδα',
-      type: 'item',
-      icon: 'feather icon-home',
-      url: '/app/home'
+      id: "home_page",
+      title: "Αρχική σελίδα",
+      type: "item",
+      icon: "feather icon-home",
+      url: "/app/home",
     },
     {
-      id: 'parastatika',
-      title: 'Παραστατικά',
-      type: 'item',
-      icon: 'feather icon-file',
-      url: '/app/invoices'
+      id: "parastatika",
+      title: "Παραστατικά",
+      type: "item",
+      icon: "feather icon-file",
+      url: "/app/invoices",
     },
     {
-      id: 'eidh',
-      title: 'Είδη',
-      type: 'item',
-      icon: 'feather icon-shopping-cart',
-      url: '/app/products'
+      id: "eidh",
+      title: "Είδη",
+      type: "item",
+      icon: "feather icon-shopping-cart",
+      url: "/app/products",
     },
     {
-      id: 'epafes',
-      title: 'Επαφές',
-      type: 'item',
-      icon: 'feather icon-users',
-      url: '/app/customers'
+      id: "epafes",
+      title: "Επαφές",
+      type: "item",
+      icon: "feather icon-users",
+      url: "/app/customers",
     },
-    // {          
+    {
+      id: "charts",
+      title: "Στατιστικά",
+      type: "item",
+      icon: "feather icon-pie-chart",
+      url: "/app/charts",
+    },
+    // {
     //     id: 'navigation',
     //     title: 'Navigation',
     //     type: 'group',
@@ -58,34 +65,34 @@ const menuItems = {
     //     ]
     //   },
     {
-      id: 'ui-element',
-      title: 'UI ELEMENT',
-      type: 'group',
-      icon: 'icon-ui',
+      id: "ui-element",
+      title: "UI ELEMENT",
+      type: "group",
+      icon: "icon-ui",
       children: [
         {
-          id: 'component',
-          title: 'Ρυθμίσεις',
-          type: 'collapse',
-          icon: 'feather icon-settings',
+          id: "component",
+          title: "Ρυθμίσεις",
+          type: "collapse",
+          icon: "feather icon-settings",
           children: [
             {
-              id: 'edit_pdf',
-              title: 'Επξεργασία παραστατικού',
-              type: 'item',
-              icon: 'feather icon-edit',
-              url: '/app/pdf/edit-template'
+              id: "edit_pdf",
+              title: "Επξεργασία παραστατικού",
+              type: "item",
+              icon: "feather icon-edit",
+              url: "/app/pdf/edit-template",
             },
             {
-              id: 'my_account',
-              title: 'O λογαριασμός μου',
-              type: 'item',
-              icon: 'feather icon-user',
-              url: '/'
-            }
-          ]
-        }
-      ]
+              id: "my_account",
+              title: "O λογαριασμός μου",
+              type: "item",
+              icon: "feather icon-user",
+              url: "/",
+            },
+          ],
+        },
+      ],
     },
     // {
     //   id: 'ui-forms',
@@ -240,7 +247,7 @@ const menuItems = {
     //     }
     //   ]
     // }
-  ]
+  ],
 };
 
 export default menuItems;

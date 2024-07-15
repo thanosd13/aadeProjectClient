@@ -3,7 +3,13 @@ import { Form, Col } from "react-bootstrap";
 import "./DropDown.css";
 import { initialData } from "../../data/productData";
 
-const PriceDropDownMenu = ({ formData, setFormData, value, onChange }) => {
+const PriceDropDownMenu = ({
+  formData,
+  setFormData,
+  value,
+  onChange,
+  disabled,
+}) => {
   const handleTypeChange = (event) => {
     setFormData({
       ...formData,
@@ -37,6 +43,7 @@ const PriceDropDownMenu = ({ formData, setFormData, value, onChange }) => {
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="custom-dropdown"
+            disabled={disabled}
           >
             <option value="">Επιλέξτε</option>
             {initialData.map((item) => (

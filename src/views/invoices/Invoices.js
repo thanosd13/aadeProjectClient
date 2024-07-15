@@ -56,11 +56,13 @@ const Invoices = () => {
   const [isSumplhrwmatiko, setIsSumplhrwmatiko] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [shouldFetch, setShouldFetch] = useState(false);
-  const [itemsPerPage] = useState(2);
+  const [itemsPerPage] = useState(3);
   const [resultOpen, setResultOpen] = useState(false);
   const [status, setStatus] = useState(null);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [typeDisabled, setTypeDisabled] = useState(false);
+  const [fpaDisabled, setFpaDisabled] = useState(false);
   const id = useSelector((state) => state.auth.user.user.id);
 
   const [customerData, setCustomerData] = useState({
@@ -75,7 +77,6 @@ const Invoices = () => {
     work: "",
     email: "",
     tel_number: "",
-    date: "",
   });
 
   const [invoiceData, setInvoiceData] = useState({
@@ -89,13 +90,29 @@ const Invoices = () => {
       invoice_serie: "",
       serial_number: "",
       invoice_mark: "",
+      date: "",
     },
     only_view: false,
   });
 
   const invoiceTypes = {
-    1: "Τιμολόγιο πώλησης",
-    2: "Απόδειξη",
+    1.1: "Τιμολόγιο πώλησης",
+    1.2: "Τιμολόγιο Πώλησης / Ενδοκοινοτικές Παραδόσεις",
+    1.3: "Τιμολόγιο Πώλησης / Παραδόσεις Τρίτων Χωρών",
+    1.4: "Τιμολόγιο Πώλησης / Πώληση για Λογαριασμό Τρίτων",
+    1.5: "Τιμολόγιο Πώλησης / Εκκαθάριση Πωλήσεων Τρίτων - Αμοιβή από Πωλήσεις Τρίτων",
+    1.6: "Τιμολόγιο Πώλησης / Συμπληρωματικό Παραστατικό",
+    2.1: "Τιμολόγιο Παροχής",
+    2.2: "Τιμολόγιο Παροχής / Ενδοκοινοτική Παροχή Υπηρεσιών",
+    2.3: "Τιμολόγιο Παροχής / Παροχή Υπηρεσιών σε λήπτη Τρίτης Χώρας",
+    2.4: "Τιμολόγιο Παροχής / Συμπληρωματικό Παραστατικό",
+    5.1: "Πιστωτικό Τιμολόγιο / Συσχετιζόμενο",
+    5.2: "Πιστωτικό Τιμολόγιο / Μη Συσχετιζόμενο",
+    6.1: "Στοιχείο Αυτοπαράδοσης",
+    6.2: "Στοιχείο Ιδιοχρησιμοποίησης",
+    7.1: "Συμβόλαιο - Έσοδο",
+    8.1: "Ενοίκια - Έσοδο",
+    11.2: "ΑΠΥ",
   };
 
   const [shouldGeneratePdf, setShouldGeneratePdf] = useState(false);
@@ -149,7 +166,10 @@ const Invoices = () => {
 
   const handleInformationsChange = (event) => {
     const { name, value } = event.target;
-    if (name == "invoice_type" && (value == 1.6 || value == 2.4)) {
+    if (
+      name == "invoice_type" &&
+      (value == 1.6 || value == 2.4 || value == 5.1 || value == 5.2)
+    ) {
       PdfService.getMarks(id)
         .then((response) => {
           setMarks(Array.isArray(response.data.data) ? response.data.data : []); // Ensure the response is an array
@@ -159,7 +179,13 @@ const Invoices = () => {
           setMarks([]); // Set to empty array in case of error
         });
       setIsSumplhrwmatiko(true);
-    } else if (name == "invoice_type" && value != 1.6) {
+    } else if (
+      name == "invoice_type" &&
+      value != 1.6 &&
+      value != 2.4 &&
+      value != 5.1 &&
+      value != 5.2
+    ) {
       setIsSumplhrwmatiko(false);
       setMarks([]);
     }
@@ -168,6 +194,18 @@ const Invoices = () => {
       ...prevInvoiceData,
       informations: updatedInformations,
     }));
+
+    if (["2.1", "2.2", "2.3", "2.4"].includes(value)) {
+      const updatedProducts = products.map((product) => ({
+        ...product,
+        type: "-",
+      }));
+      setProducts(updatedProducts);
+      setInvoiceData((prevInvoiceData) => ({
+        ...prevInvoiceData,
+        products: updatedProducts,
+      }));
+    }
   };
 
   const handleMarkChange = (event) => {
@@ -342,21 +380,79 @@ const Invoices = () => {
       });
   }, [shouldFetch]);
 
-  const addProduct = () => {
-    const newProduct = {
-      id: products.length + 1, // Increment the product id
+  useEffect(() => {
+    setCustomerData({
+      afm: "",
       name: "",
-      price: 0.0,
-      type: "",
-      fpa: "",
-      final_price: 0.0,
-    };
-    const updatedProducts = [...products, newProduct];
-    setProducts(updatedProducts);
+      country: "",
+      city: "",
+      address: "",
+      street_number: "",
+      postal_code: "",
+      doy: "",
+      work: "",
+      email: "",
+      tel_number: "",
+      date: "",
+    });
+    setProducts([]);
     setInvoiceData((prevInvoiceData) => ({
       ...prevInvoiceData,
-      products: updatedProducts,
+      customerData,
+      products,
+      informations: {
+        payment_way: "",
+        invoice_type: "",
+        notes: "",
+        my_data: false,
+        invoice_serie: "",
+        serial_number: "",
+        invoice_mark: "",
+      },
     }));
+  }, [showForm]);
+
+  const addProduct = () => {
+    if (
+      invoiceData.informations.invoice_type == "2.1" ||
+      invoiceData.informations.invoice_type == "2.2" ||
+      invoiceData.informations.invoice_type == "2.3" ||
+      invoiceData.informations.invoice_type == "2.4"
+    ) {
+      setTypeDisabled(true);
+      const newProduct = {
+        id: products.length + 1, // Increment the product id
+        name: "",
+        price: 0.0,
+        type: "-",
+        fpa: "",
+        final_price: 0.0,
+      };
+
+      const updatedProducts = [...products, newProduct];
+      setProducts(updatedProducts);
+      setInvoiceData((prevInvoiceData) => ({
+        ...prevInvoiceData,
+        products: updatedProducts,
+      }));
+    } else {
+      setTypeDisabled(false);
+      const newProduct = {
+        id: products.length + 1, // Increment the product id
+        name: "",
+        price: 0.0,
+        type: "",
+        fpa: "",
+        final_price: 0.0,
+      };
+
+      const updatedProducts = [...products, newProduct];
+      setProducts(updatedProducts);
+      setInvoiceData((prevInvoiceData) => ({
+        ...prevInvoiceData,
+        products: updatedProducts,
+      }));
+    }
   };
 
   const handleProductChange = (event, index) => {
@@ -631,7 +727,6 @@ const Invoices = () => {
       if (!customerData.work) emptyFields.push("Αντικείμενο απασχόλησης");
       if (!customerData.email) emptyFields.push("E-mail");
       if (!customerData.tel_number) emptyFields.push("Τηλέφωνο επικοινωνίας");
-      if (!customerData.date) emptyFields.push("Η/νία έκδοσης");
     }
 
     // Invoice data validation
@@ -643,6 +738,7 @@ const Invoices = () => {
       emptyFields.push("Σειρά παραστατικού");
     if (!invoiceData.informations.serial_number)
       emptyFields.push("ΑΑ παραστατικού");
+    if (!invoiceData.informations.date) emptyFields.push("Η/νία έκδοσης");
 
     // Product data validation
     products.forEach((product, index) => {
@@ -691,9 +787,17 @@ const Invoices = () => {
                   <td>{invoice.price}</td>
                   <td>{invoice.fpa}</td>
                   <td>{invoice.total_price}</td>
-                  <td>-</td>
+                  <td>
+                    {invoice.myDataNewInvoice != null
+                      ? invoice.myDataNewInvoice.invoice_mark
+                      : "Δεν έχει διαβιβαστεί"}
+                  </td>
                   <td className="menu-actions">
-                    <DropdownButton id="dropdown-item-button" title="Ενέργειες">
+                    <DropdownButton
+                      styles={customStyles}
+                      id="dropdown-item-button"
+                      title="Ενέργειες"
+                    >
                       <Dropdown.Item
                         onClick={() => printDocument(id, invoice.id)}
                         as="button"
@@ -817,12 +921,12 @@ const Invoices = () => {
                           <option value="2.4">
                             Τιμολόγιο Παροχής / Συμπληρωματικό Παραστατικό
                           </option>
-                          <option value="3.1">
+                          {/* <option value="3.1">
                             Τίτλος Κτήσης (μη υπόχρεος Εκδότης)
                           </option>
                           <option value="3.2">
                             Τίτλος Κτήσης (άρνηση έκδοσης από υπόχρεο Εκδότη)
-                          </option>
+                          </option> */}
                           <option value="5.1">
                             Πιστωτικό Τιμολόγιο / Συσχετιζόμενο
                           </option>
@@ -967,6 +1071,25 @@ const Invoices = () => {
                             name="serial_number"
                             disabled={serialNumDisabled}
                             value={invoiceData.informations.serial_number}
+                            onChange={handleInformationsChange}
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col xl={3} xxl={3}>
+                        {" "}
+                        <Form.Group
+                          className="mb-3"
+                          as={Col}
+                          controlId="formGridPassword"
+                        >
+                          <Form.Label>Η/νία έκδοσης</Form.Label>
+                          <Form.Control
+                            className="form-group-style"
+                            type="date"
+                            placeholder="Η/νία έκδοσης"
+                            name="date"
+                            value={invoiceData.informations.date}
+                            max={getTodayDate()}
                             onChange={handleInformationsChange}
                           />
                         </Form.Group>
@@ -1200,22 +1323,6 @@ const Invoices = () => {
                           onChange={handleInputChange}
                         />
                       </Form.Group>
-                      <Form.Group
-                        className="mb-3"
-                        as={Col}
-                        controlId="formGridPassword"
-                      >
-                        <Form.Label>Η/νία έκδοσης</Form.Label>
-                        <Form.Control
-                          className="form-group-style"
-                          type="date"
-                          placeholder="Η/νία έκδοσης"
-                          name="date"
-                          value={customerData.date}
-                          max={getTodayDate()}
-                          onChange={handleInputChange}
-                        />
-                      </Form.Group>
                     </Row>
                     <h4 className="header-category header-products">
                       <i className="feather icon-shopping-cart icon" />
@@ -1232,7 +1339,7 @@ const Invoices = () => {
                         <thead className="table-primary">
                           <tr>
                             <th>ΑΑ</th>
-                            <th>Όνομα</th>
+                            <th>Προϊόν / Υπηρεσία</th>
                             <th>Τιμή</th>
                             <th>Μονάδες μέτρησης</th>
                             <th>Φ.Π.Α</th>
@@ -1275,6 +1382,7 @@ const Invoices = () => {
                                 </td>
                                 <td>
                                   <PriceDropDownMenu
+                                    disabled={typeDisabled}
                                     value={product.type}
                                     onChange={(value) =>
                                       handleTypeChange(value, index)
