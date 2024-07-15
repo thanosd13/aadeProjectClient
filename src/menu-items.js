@@ -30,7 +30,7 @@ const menuItems = {
     },
     {
       id: "charts",
-      title: "Στατιστικά",
+      title: "Αναφορές",
       type: "item",
       icon: "feather icon-pie-chart",
       url: "/app/charts",

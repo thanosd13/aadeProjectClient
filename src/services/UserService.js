@@ -41,6 +41,12 @@ class UserService {
       headers: AuthHeader(),
     });
   }
+
+  getDailyTotalPrice(id) {
+    return axios.get(API_URL + "/user/getDailyTotalPrice/" + id, {
+      headers: AuthHeader(),
+    });
+  }
 }
 
 export default new UserService();

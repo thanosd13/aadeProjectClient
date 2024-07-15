@@ -1,17 +1,18 @@
-import React from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
+import React from "react";
+import { Row, Col, Card } from "react-bootstrap";
 
-import LineChart from './chart/LineChart';
-import BarDiscreteChart from './chart/BarDiscreteChart';
-import PieDonutChart from './chart/PieDonutChart';
-import PieBasicChart from './chart/PieBasicChart';
-import MultiBarChart from './chart/MultiBarChart';
+import LineChart from "./chart/LineChart";
+import BarDiscreteChart from "./chart/BarDiscreteChart";
+import PieDonutChart from "./chart/PieDonutChart";
+import PieBasicChart from "./chart/PieBasicChart";
+import MultiBarChart from "./chart/MultiBarChart";
+import HorizontalBarChart from "./chart/HorizontalBarChart";
 
 const Nvd3Chart = () => {
   return (
     <React.Fragment>
       <Row>
-        <Col md={6}>
+        {/* <Col md={6}>
           <Card>
             <Card.Header>
               <Card.Title as="h5">Line Chart</Card.Title>
@@ -24,24 +25,24 @@ const Nvd3Chart = () => {
         <Col md={6}>
           <Card>
             <Card.Header>
-              <Card.Title as="h5">Discrete Bar Chart</Card.Title>
+              <Card.Title as="h5">Πωλήσεις ήνα</Card.Title>
             </Card.Header>
             <Card.Body>
               <BarDiscreteChart />
             </Card.Body>
           </Card>
-        </Col>
+        </Col> */}
         <Col sm={12}>
           <Card>
             <Card.Header>
-              <Card.Title as="h5">Stacked/Grouped Multi-Bar Chart</Card.Title>
+              <Card.Title as="h5">Πωλήσεις μήνα</Card.Title>
             </Card.Header>
             <Card.Body>
-              <MultiBarChart />
+              <HorizontalBarChart />
             </Card.Body>
           </Card>
         </Col>
-        <Col md={6}>
+        {/* <Col md={6}>
           <Card>
             <Card.Header>
               <Card.Title as="h5">Pie Basic Chart</Card.Title>
@@ -50,11 +51,11 @@ const Nvd3Chart = () => {
               <PieBasicChart />
             </Card.Body>
           </Card>
-        </Col>
-        <Col md={6}>
+        </Col> */}
+        <Col md={12}>
           <Card>
             <Card.Header>
-              <Card.Title as="h5">Donut Chart</Card.Title>
+              <Card.Title as="h5">Δημοφιλή προϊόντα</Card.Title>
             </Card.Header>
             <Card.Body className="text-center">
               <PieDonutChart />

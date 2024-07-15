@@ -675,6 +675,24 @@ const Invoices = () => {
     setCurrentPage(pageNumber);
   };
 
+  const cancelInvoice = (mark) => {
+    PdfService.cancelInvoice(id, mark)
+      .then((response) => {
+        if (response.status === 200) {
+          setResultOpen(true);
+          setStatus(response.status);
+          setTitle("Επιτυχία");
+          setBody("Το παραστατικό ακυρώθηκε επιτυχώς!");
+        }
+      })
+      .catch((error) => {
+        setResultOpen(true);
+        setStatus(error.response.status);
+        setTitle("Σφάλμα");
+        setBody("Κάποιο πρόβλημα προέκυψε κατά την ακύρωση του παραστατικού!");
+      });
+  };
+
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -793,11 +811,7 @@ const Invoices = () => {
                       : "Δεν έχει διαβιβαστεί"}
                   </td>
                   <td className="menu-actions">
-                    <DropdownButton
-                      styles={customStyles}
-                      id="dropdown-item-button"
-                      title="Ενέργειες"
-                    >
+                    <DropdownButton id="dropdown-item-button" title="Ενέργειες">
                       <Dropdown.Item
                         onClick={() => printDocument(id, invoice.id)}
                         as="button"
@@ -820,10 +834,22 @@ const Invoices = () => {
                         <i className="feather icon-mail icon" />
                         Αποστολή
                       </Dropdown.Item>
-                      <Dropdown.Item as="button">
-                        <i className="feather icon-x-square icon" />
-                        Ακύρωση
-                      </Dropdown.Item>
+                      {invoice.myDataNewInvoice != null ? (
+                        <Dropdown.Item
+                          onClick={() =>
+                            cancelInvoice(invoice.myDataNewInvoice.invoice_mark)
+                          }
+                          as="button"
+                        >
+                          <i className="feather icon-x-square icon" />
+                          Ακύρωση
+                        </Dropdown.Item>
+                      ) : (
+                        <Dropdown.Item disabled={true} as="button">
+                          <i className="feather icon-x-square icon" />
+                          Ακύρωση
+                        </Dropdown.Item>
+                      )}
                     </DropdownButton>
                   </td>
                 </tr>

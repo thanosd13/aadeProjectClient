@@ -19,6 +19,12 @@ class PdfService {
     );
   }
 
+  cancelInvoice(id, mark) {
+    return axios.get(MIDDLEWARE_ULR + "/pdf/cancelInvoice/" + id + "/" + mark, {
+      headers: AuthHeader(),
+    });
+  }
+
   updatePdfData(formData, id) {
     return axios.put(
       MIDDLEWARE_ULR + "/pdf/" + id,
