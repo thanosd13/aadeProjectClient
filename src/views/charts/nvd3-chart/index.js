@@ -52,7 +52,7 @@ const Nvd3Chart = () => {
             </Card.Body>
           </Card>
         </Col> */}
-        <Col md={12}>
+        {/* <Col md={12}>
           <Card>
             <Card.Header>
               <Card.Title as="h5">Δημοφιλή προϊόντα</Card.Title>
@@ -61,7 +61,7 @@ const Nvd3Chart = () => {
               <PieDonutChart />
             </Card.Body>
           </Card>
-        </Col>
+        </Col> */}
       </Row>
     </React.Fragment>
   );

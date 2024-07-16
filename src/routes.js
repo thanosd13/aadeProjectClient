@@ -42,6 +42,11 @@ const routes = [
   },
   {
     exact: "true",
+    path: "/home",
+    element: lazy(() => import("./views/website/home/HomePage")),
+  },
+  {
+    exact: "true",
     path: "/auth/signin-1",
     element: lazy(() => import("./views/auth/signin/SignIn1")),
   },
@@ -159,9 +164,7 @@ const routes = [
         path: "*",
         exact: "true",
         element: () => (
-          <Navigate
-            to={localStorage.getItem("user") ? "/app/home" : "/login"}
-          />
+          <Navigate to={localStorage.getItem("user") ? "/app/home" : "/home"} />
         ),
       },
     ],

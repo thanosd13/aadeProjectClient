@@ -1,39 +1,39 @@
-import React, { useState } from 'react';
-import { Card, ListGroup, Dropdown } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import React, { useState } from "react";
+import { Card, ListGroup, Dropdown } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
-import ChatList from './ChatList';
+import ChatList from "./ChatList";
 
-import avatar1 from '../../../../assets/images/user/avatar-1.jpg';
-import avatar2 from '../../../../assets/images/user/avatar-2.jpg';
-import avatar3 from '../../../../assets/images/user/avatar-3.jpg';
-import avatar4 from '../../../../assets/images/user/avatar-4.jpg';
-import { useDispatch } from 'react-redux';
-import { logout } from '../../../../actions/auth';
+import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
+import avatar2 from "../../../../assets/images/user/avatar-2.jpg";
+import avatar3 from "../../../../assets/images/user/avatar-3.jpg";
+import avatar4 from "../../../../assets/images/user/avatar-4.jpg";
+import { useDispatch } from "react-redux";
+import { logout } from "../../../../actions/auth";
 
 const NavRight = () => {
   const [listOpen, setListOpen] = useState(false);
 
   const notiData = [
     {
-      name: 'Joseph William',
+      name: "Joseph William",
       image: avatar2,
-      details: 'Purchase New Theme and make payment',
-      activity: '30 min'
+      details: "Purchase New Theme and make payment",
+      activity: "30 min",
     },
     {
-      name: 'Sara Soudein',
+      name: "Sara Soudein",
       image: avatar3,
-      details: 'currently login',
-      activity: '30 min'
+      details: "currently login",
+      activity: "30 min",
     },
     {
-      name: 'Suzen',
+      name: "Suzen",
       image: avatar4,
-      details: 'Purchase New Theme and make payment',
-      activity: 'yesterday'
-    }
+      details: "Purchase New Theme and make payment",
+      activity: "yesterday",
+    },
   ];
 
   const dispatch = useDispatch();
@@ -41,16 +41,21 @@ const NavRight = () => {
 
   const logOut = () => {
     dispatch(logout());
-    navigate("/login")
-  }
+    navigate("/home");
+  };
 
   const editTemplate = () => {
-    navigate("/app/pdf/edit-template")
-  }
+    navigate("/app/pdf/edit-template");
+  };
 
   return (
     <React.Fragment>
-      <ListGroup as="ul" bsPrefix=" " className="navbar-nav ml-auto" id="navbar-right">
+      <ListGroup
+        as="ul"
+        bsPrefix=" "
+        className="navbar-nav ml-auto"
+        id="navbar-right"
+      >
         {/* <ListGroup.Item as="li" bsPrefix=" ">
           <Dropdown align="start">
             <Dropdown.Toggle as={Link} variant="link" to="#" id="dropdown-basic">
@@ -131,7 +136,12 @@ const NavRight = () => {
         </ListGroup.Item> */}
         <ListGroup.Item as="li" bsPrefix=" ">
           <Dropdown align="start" className="drp-user">
-            <Dropdown.Toggle as={Link} variant="link" to="#" id="dropdown-basic">
+            <Dropdown.Toggle
+              as={Link}
+              variant="link"
+              to="#"
+              id="dropdown-basic"
+            >
               <i className="icon feather icon-settings" />
             </Dropdown.Toggle>
             <Dropdown.Menu align="end" className="profile-notification">
@@ -142,7 +152,12 @@ const NavRight = () => {
                   <i className="feather icon-log-out" />
                 </Link>
               </div>
-              <ListGroup as="ul" bsPrefix=" " variant="flush" className="pro-body">
+              <ListGroup
+                as="ul"
+                bsPrefix=" "
+                variant="flush"
+                className="pro-body"
+              >
                 <ListGroup.Item as="li" bsPrefix=" " onClick={editTemplate}>
                   <Link className="dropdown-item">
                     <i className="feather icon-settings" /> Ρυθμίσεις

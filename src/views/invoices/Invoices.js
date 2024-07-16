@@ -428,8 +428,9 @@ const Invoices = () => {
         fpa: "",
         final_price: 0.0,
       };
-
+      console.log("new product!", newProduct);
       const updatedProducts = [...products, newProduct];
+      console.log(updatedProducts);
       setProducts(updatedProducts);
       setInvoiceData((prevInvoiceData) => ({
         ...prevInvoiceData,
@@ -731,7 +732,7 @@ const Invoices = () => {
 
   const validateForm = () => {
     const emptyFields = [];
-
+    console.log(invoiceData);
     // Customer data validation
     if (invoiceData.informations.invoice_type !== "11.2") {
       if (!customerData.afm) emptyFields.push("ΑΦΜ");
@@ -1376,7 +1377,7 @@ const Invoices = () => {
                         <tbody>
                           {Array.isArray(products) &&
                             products.map((product, index) => (
-                              <tr key={index}>
+                              <tr key={`${product.id}-${index}`}>
                                 <td>{product.id}</td>
                                 <td>
                                   <CreatableSelect
