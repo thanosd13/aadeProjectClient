@@ -1,41 +1,12 @@
 import React, { useState } from "react";
 import { Card, ListGroup, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import PerfectScrollbar from "react-perfect-scrollbar";
 
-import ChatList from "./ChatList";
-
-import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
-import avatar2 from "../../../../assets/images/user/avatar-2.jpg";
-import avatar3 from "../../../../assets/images/user/avatar-3.jpg";
-import avatar4 from "../../../../assets/images/user/avatar-4.jpg";
+import blankUser from "../../../../assets/images/user/blank-profile.png";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../../actions/auth";
 
 const NavRight = () => {
-  const [listOpen, setListOpen] = useState(false);
-
-  const notiData = [
-    {
-      name: "Joseph William",
-      image: avatar2,
-      details: "Purchase New Theme and make payment",
-      activity: "30 min",
-    },
-    {
-      name: "Sara Soudein",
-      image: avatar3,
-      details: "currently login",
-      activity: "30 min",
-    },
-    {
-      name: "Suzen",
-      image: avatar4,
-      details: "Purchase New Theme and make payment",
-      activity: "yesterday",
-    },
-  ];
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -146,7 +117,11 @@ const NavRight = () => {
             </Dropdown.Toggle>
             <Dropdown.Menu align="end" className="profile-notification">
               <div className="pro-head">
-                <img src={avatar1} className="img-radius" alt="User Profile" />
+                <img
+                  src={blankUser}
+                  className="img-radius"
+                  alt="User Profile"
+                />
                 {/* <span>John Doe</span> */}
                 <Link to="#" className="dud-logout" title="Logout">
                   <i className="feather icon-log-out" />
@@ -163,11 +138,11 @@ const NavRight = () => {
                     <i className="feather icon-settings" /> Ρυθμίσεις
                   </Link>
                 </ListGroup.Item>
-                <ListGroup.Item as="li" bsPrefix=" ">
+                {/* <ListGroup.Item as="li" bsPrefix=" ">
                   <Link to="#" className="dropdown-item">
                     <i className="feather icon-user" /> Profile
                   </Link>
-                </ListGroup.Item>
+                </ListGroup.Item> */}
                 {/* <ListGroup.Item as="li" bsPrefix=" ">
                   <Link to="#" className="dropdown-item">
                     <i className="feather icon-mail" /> My Messages
@@ -180,7 +155,7 @@ const NavRight = () => {
                 </ListGroup.Item> */}
                 <ListGroup.Item as="li" bsPrefix=" " onClick={logOut}>
                   <Link className="dropdown-item">
-                    <i className="feather icon-log-out" /> Logout
+                    <i className="feather icon-log-out" /> Αποσύνδεση
                   </Link>
                 </ListGroup.Item>
               </ListGroup>

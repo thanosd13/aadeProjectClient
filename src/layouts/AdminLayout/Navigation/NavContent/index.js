@@ -1,29 +1,35 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { ListGroup } from 'react-bootstrap';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import NavItem from './NavItem';
+import PropTypes from "prop-types";
+import React from "react";
+import { ListGroup } from "react-bootstrap";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import NavItem from "./NavItem";
 
-import NavGroup from './NavGroup';
+import NavGroup from "./NavGroup";
 
 const NavContent = ({ navigation }) => {
   const navItems = navigation.map((item) => {
     switch (item.type) {
-      case 'item':
+      case "item":
         return <NavItem key={item.id} item={item} />;
-      case 'group':
-        return <NavGroup key={'nav-group-' + item.id} group={item} />;
+      case "group":
+        return <NavGroup key={"nav-group-" + item.id} group={item} />;
       default:
         return false;
     }
   });
 
-  let mainContent = '';
+  let mainContent = "";
 
   mainContent = (
     <div className="navbar-content datta-scroll">
       <PerfectScrollbar>
-        <ListGroup variant="flush" as="ul" bsPrefix=" " className="nav pcoded-inner-navbar" id="nav-ps-next">
+        <ListGroup
+          variant="flush"
+          as="ul"
+          bsPrefix=" "
+          className="nav pcoded-inner-navbar"
+          id="nav-ps-next"
+        >
           {navItems}
         </ListGroup>
       </PerfectScrollbar>
@@ -34,7 +40,7 @@ const NavContent = ({ navigation }) => {
 };
 
 NavContent.propTypes = {
-  navigation: PropTypes.array
+  navigation: PropTypes.array,
 };
 
 export default NavContent;

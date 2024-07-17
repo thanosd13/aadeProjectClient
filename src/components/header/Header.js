@@ -41,7 +41,6 @@ class Header extends Component {
                 <NavLink
                   to="/home"
                   tag={Link}
-                  activeStyle={{ fontWeight: "bold" }}
                   style={{ color: theme.text }}
                   onMouseEnter={(event) => onMouseEnter(event, theme.highlight)}
                   onMouseOut={(event) => onMouseOut(event)}
@@ -101,7 +100,6 @@ class Header extends Component {
                 <NavLink
                   to="/home"
                   tag={Link}
-                  activeStyle={{ fontWeight: "bold" }}
                   style={{ color: theme.text }}
                   onMouseEnter={(event) => onMouseEnter(event, theme.highlight)}
                   onMouseOut={(event) => onMouseOut(event)}
@@ -113,7 +111,6 @@ class Header extends Component {
                 <NavLink
                   to="/login"
                   tag={Link}
-                  activeStyle={{ fontWeight: "bold" }}
                   style={{
                     color: "#FFFFFF",
                     backgroundColor: "#3f4d67",

@@ -90,7 +90,7 @@ const Invoices = () => {
       invoice_serie: "",
       serial_number: "",
       invoice_mark: "",
-      date: "",
+      date: getTodayDate(),
     },
     only_view: false,
   });
@@ -408,6 +408,7 @@ const Invoices = () => {
         invoice_serie: "",
         serial_number: "",
         invoice_mark: "",
+        date: getTodayDate(),
       },
     }));
   }, [showForm]);
@@ -725,6 +726,7 @@ const Invoices = () => {
           serial_number: maxSerialNumber,
         },
       }));
+      console.log(invoiceData);
     } catch (error) {
       console.log(error);
     }

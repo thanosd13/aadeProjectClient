@@ -1,26 +1,35 @@
-import React, {useState} from 'react';
-import { Card, Row, Col, Alert } from 'react-bootstrap';
-import { NavLink, Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Card, Row, Col, Alert } from "react-bootstrap";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 
-import Breadcrumb from '../../../layouts/AdminLayout/Breadcrumb';
-import { useDispatch } from 'react-redux';
-import { register } from '../../../actions/auth';
+import Breadcrumb from "../../../layouts/AdminLayout/Breadcrumb";
+import { useDispatch } from "react-redux";
+import { register } from "../../../actions/auth";
+import ResultModal from "../../../components/Modals/ResultModal";
 
 const SignUp1 = () => {
-
   const dispatch = useDispatch();
-  const[error, setError] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [resultOpen, setResultOpen] = useState(false);
+  const [status, setStatus] = useState(null);
+  const [modalTitle, setModalTitle] = useState("");
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
   const [formData, setFormData] = useState({
     username: "",
-    password: ""
+    password: "",
   });
 
-  const handleChange = event => {
+  const handleClose = () => {
+    setResultOpen(false);
+  };
+
+  const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -30,37 +39,40 @@ const SignUp1 = () => {
   }
 
   const handleSubmit = () => {
-
-    if(!validateEmail(formData.username)) {
+    if (!validateEmail(formData.username)) {
       setError("Μη έγκυρη διεύθυνση ηλεκτρονικού ταχυδρομίου!");
       return;
     }
 
-    if(!formData.username || !formData.password) {
+    if (!formData.username || !formData.password) {
       setError("Συμπληρώστε και τα δύο πεδία!");
       return;
-    };
+    }
 
     dispatch(register(formData))
-    .then((response) => {
-        if(response.status === 201) {
-          navigate("/login");
+      .then((response) => {
+        if (response.status === 201) {
+          setResultOpen(true);
+          setStatus(response.status);
+          setTitle("Επιτυχής ενέργεια");
+          setBody("Η εγγραφή σας ολοκληρώθηκε επιτυχώς!");
+          // navigate("/login");
         }
-    })
-    .catch((error) => {
-      console.error("Complete error object:", error);
-      if (error && error.response) {
-        if (error.response.status === 409) {
-          setError("Ο λογαριασμός υπάρχει ήδη!");
+      })
+      .catch((error) => {
+        console.error("Complete error object:", error);
+        if (error && error.response) {
+          if (error.response.status === 409) {
+            setError("Ο λογαριασμός υπάρχει ήδη!");
+          } else {
+            setError("Κάποιο λάθος προέκυψε!");
+          }
         } else {
-          setError("Κάποιο λάθος προέκυψε!");
+          // This case handles network errors or other types of errors that do not produce a standard response object
+          setError("Πρόβλημα στην επικοινωνία με τον διακομιστή!");
         }
-      } else {
-        // This case handles network errors or other types of errors that do not produce a standard response object
-        setError("Πρόβλημα στην επικοινωνία με τον διακομιστή!");
-      }
-    });
-  }
+      });
+  };
 
   return (
     <React.Fragment>
@@ -76,26 +88,44 @@ const SignUp1 = () => {
           <Card className="borderless">
             <Row className="align-items-center">
               <Col>
-
                 <Card.Body className="text-center">
                   <div className="mb-4">
                     <i className="feather icon-user-plus auth-icon" />
                   </div>
                   <h3 className="mb-4">Εγγραφή</h3>
-                  {error &&
+                  {error && (
                     <Col sm={12}>
                       <Alert variant="danger">{error}</Alert>
                     </Col>
-                  }
+                  )}
                   <div className="input-group mb-3">
-                    <input onChange={handleChange} type="email" className="form-control" placeholder="Διεύθυνση e-mail" name="username" value={formData.username} />
+                    <input
+                      onChange={handleChange}
+                      type="email"
+                      className="form-control"
+                      placeholder="Διεύθυνση e-mail"
+                      name="username"
+                      value={formData.username}
+                    />
                   </div>
                   <div className="input-group mb-4">
-                    <input onChange={handleChange} type="password" className="form-control" placeholder="Κωδικός πρόσβασης" name="password" value={formData.password} />
+                    <input
+                      onChange={handleChange}
+                      type="password"
+                      className="form-control"
+                      placeholder="Κωδικός πρόσβασης"
+                      name="password"
+                      value={formData.password}
+                    />
                   </div>
-                  <button onClick={handleSubmit} className="btn btn-primary mb-4">Εγγραφή</button>
+                  <button
+                    onClick={handleSubmit}
+                    className="btn btn-primary mb-4"
+                  >
+                    Εγγραφή
+                  </button>
                   <p className="mb-2">
-                    Έχετε ήδη λογαριασμό;{' '}
+                    Έχετε ήδη λογαριασμό;{" "}
                     <NavLink to="/auth/signin-1" className="f-w-400">
                       Σύνδεση
                     </NavLink>
@@ -106,6 +136,13 @@ const SignUp1 = () => {
           </Card>
         </div>
       </div>
+      <ResultModal
+        show={resultOpen}
+        status={status}
+        title={title}
+        body={body}
+        onHide={handleClose}
+      />
     </React.Fragment>
   );
 };

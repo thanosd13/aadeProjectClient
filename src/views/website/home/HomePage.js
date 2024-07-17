@@ -14,7 +14,7 @@ class Home extends Component {
         <Greeting theme={chosenTheme} />
         <Skills theme={chosenTheme} />
         <Footer theme={chosenTheme} />
-        <TopButton theme={chosenTheme} />
+        {/* <TopButton theme={chosenTheme} /> */}
       </div>
     );
   }
