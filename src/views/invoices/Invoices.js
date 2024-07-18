@@ -53,6 +53,7 @@ const Invoices = () => {
   const [invoices, setInvoices] = useState([]);
   const [series, setSeries] = useState([]);
   const [marks, setMarks] = useState([]);
+  const [pdfData, setPdfData] = useState([]);
   const [isSumplhrwmatiko, setIsSumplhrwmatiko] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [shouldFetch, setShouldFetch] = useState(false);
@@ -274,6 +275,17 @@ const Invoices = () => {
       });
   };
 
+  const getPdfData = async () => {
+    try {
+      const response = await PdfService.getPdfData(id);
+      if (response.status === 200) {
+        setPdfData(response.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch PDF data:", error);
+    }
+  };
+
   const getProducts = () => {
     ProductService.getProducts(id)
       .then((response) => {
@@ -336,6 +348,7 @@ const Invoices = () => {
     if (showForm) {
       getCustomers();
       getProducts();
+      getPdfData();
     }
   }, [showForm]);
 
@@ -647,8 +660,16 @@ const Invoices = () => {
 
   const createInvoice = () => {
     const emptyFields = validateForm();
-    console.log(emptyFields);
-    console.log(invoiceData.informations);
+    console.log(pdfData);
+    if (pdfData.length < 1) {
+      setResultOpen(true);
+      setStatus(404);
+      setTitle("Σφάλμα");
+      setBody(
+        `Μεταβείτε στις ρυθμίσεις --> Επεξεργασία παραστατικού και αποθηκεύστε τις αλλαγές στο template όπως επιθυμείτε!`
+      );
+      return;
+    }
 
     if (emptyFields.length > 0) {
       setResultOpen(true);
@@ -734,9 +755,9 @@ const Invoices = () => {
 
   const validateForm = () => {
     const emptyFields = [];
-    console.log(invoiceData);
-    // Customer data validation
+
     if (invoiceData.informations.invoice_type !== "11.2") {
+      // Customer data validation
       if (!customerData.afm) emptyFields.push("ΑΦΜ");
       if (!customerData.name) emptyFields.push("Όνομα πελάτη");
       if (!customerData.country) emptyFields.push("Χώρα");
